@@ -1,0 +1,40 @@
+.sta { background-color:#eee;border-bottom:solid 1px #ddd; }
+div.tbl { margin:0;overflow:auto;padding:0;width:100%;height:200px; }
+.ttlPanel-s { margin-bottom:10px; }
+.secTab { padding-bottom:0; }
+.secAct { padding-top:0; }
+.nobold { font-weight:normal; }
+.recCatBack,.deRecCatFrame { position:absolute;z-index:100; }
+.recCatBack iframe,.deRecCatFrame iframe { width:610px; }
+.recCatBack iframe { height:470px; }
+.deRecCatFrame iframe { height:548px; }
+#VarDlgContentOverlay_sec .idt { padding-top:0; }
+.keywords { margin-right:3px;width:350px; }
+.lastEditedDate { font-size:x-small;_font-size:xx-small;font-style:italic; }
+.deleteDraftLnk { font-size:x-small; }
+.vertLnks { margin-top:5px; }
+.vertLnks a { white-space:nowrap; }
+.template .secBar { border-bottom:solid 1px #ccc; }
+.template .secTitCtr { padding-left:0; }
+.templateBtn { padding-left:5px;padding-right:5px; }
+.tidSnapshot { color:#333;font-size:x-small;padding-top:3px; }
+.tidActions { padding-top:10px;padding-bottom:5px;vertical-align:middle; }
+#catboxes_inpGrp { border:solid 1px #999;height:235px;overflow-x:auto;position:relative; }
+#fcat { width:215px; }
+.broCatSel { width:220px;height:180px;vertical-align:middle; }
+.broCatSelTD { background-color:#eee;border:inset 2px; }
+.vieItmPreBoxCon { padding:0 10px;margin:0; }
+.catIframe_inp { width:100%; }
+.catIframe_inp iframe { border:solid 1px #ccc;margin-bottom:20px;height:220px; }
+.tip { margin-top:5px;margin-bottom:15px; }
+.fee { color:#00c;display:inline; }
+.metaName { color:#333;font-size:medium;font-weight:bold; }
+.noVinLyr { height:400px;width:450px;padding:0 15px 15px 0;background-color:#FFFFFF;border:1px solid #000000;position:absolute;z-index:100000; }
+.vinLyr,.swiftAcLyr { height:auto;width:auto;padding:0 15px 15px 0;background-color:#FFFFFF;border:1px solid #000000;position:absolute;z-index:100000; }
+#ymmteLyr td,#swiftAcLyr td { padding-top:25px; }
+.noImg { background-color:#F6F4F5;border:1px solid #CCCCCC;color:#B2B1B1;float:left;height:72px;text-align:center;vertical-align:middle;width:96px;margin-top:-10px; }
+#vinHelp a { vertical-align:top; }
+.stkPctr { text-align:center;margin-bottom:-15px; }
+.keywordsSyi { margin-right:3px;width:425px; }
+
+/* b=17270647 */

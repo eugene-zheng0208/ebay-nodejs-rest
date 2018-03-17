@@ -1,0 +1,3198 @@
+
+<!DOCTYPE html>
+<html xmlns:fb="http://www.facebook.com/2008/fbml"
+	xmlns:og="http://opengraphprotocol.org/schema/" lang="en">
+<head>
+<!--  fix for IE freezing.  -->
+<style type="text/css">
+body #Body .btn, body #Body c-std {
+	filter: none;
+	-ms-filter:
+		"progid:DXImageTransform.Microsoft.gradient(startColorstr='#0079bc',endColorstr='#00509d')";
+}
+</style>
+
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>  
+  <script type="text/javascript">
+   
+	
+  jQuery(document).ready(function()
+	{
+
+	$( window ).load(function() {
+	
+		var productid=<%=product.productId %>;
+		console.log('window load finished'+productid);
+		console.log();
+		var condition = <%=product.status%>;
+		
+		if(condition == 1)
+		{
+		jQuery('#itemCondition').html("New");
+		}
+		else if(condition == 2)
+		{
+		jQuery('#itemCondition').html("Manufacturer Refurbished");
+		}
+		else if(condition == 3)
+		{
+		jQuery('#itemCondition').html("Seller Refurbished");
+		}
+		else if(condition == 4)
+		{
+		jQuery('#itemCondition').html("Used");
+		}
+		
+		
+		
+		if(<%=product.isAuction%> == 1)
+		{
+		  refreshBid();		  
+		  setInterval(refreshBid, 5000);
+		  console.log('yes product is in auction')
+		  jQuery('#addCartButton').hide();
+		  jQuery('#regPriceDiv').hide();		  
+		}
+		
+		else
+		{	console.log('product is not in auction')
+			jQuery('#biddingButton').hide();
+			jQuery('#bidPriceDiv').hide();
+			jQuery('#minimumBidDiv').hide();	
+			jQuery('#timeLeftDiv').hide();	
+			jQuery('#bidInputDiv').hide();				
+			jQuery('#productPrice').html("US $" + <%=product.price%>);
+			
+		}
+		});
+	
+	
+	var nextMinBidPrice = 0;
+	var totalBids = 0;
+	
+		 function refreshBid(){
+		 
+			
+			jQuery.ajax({type:'GET',
+						 url:'/getLatestBid?auctionId=<%=auctionId%>',						 
+						 success:function(data,textStatus){
+						 console.log(data);										 												
+											if(data.result == "false"){
+											
+											}
+											else if(data.result == "true"){
+										
+											console.log('in true part');
+																					
+											jQuery('#latestBidPrice').html ("US $" + data.latestBid);
+											jQuery('#nextMinimumBid').html("Enter US $"+data.nextMinimumBid + " or more");
+											jQuery('#totalPlacedBids').html(data.totalBids);
+											   nextMinBidPrice = data.nextMinimumBid;   
+											   totalBids = data.totalBids;
+											}											
+										},
+						 error:function(XMLHttpRequest,textStatus,errorThrown){
+						 console.log('In error')
+						 }});
+		}
+	 $("#jqxNotification").jqxNotification({ width: "auto", position: "top-left", opacity: 0.9,
+                closeOnClick: true, autoClose: false, showCloseButton: true, template: "mail", blink: true
+            });
+			
+	jQuery("#addtocart").click(function () {
+
+var temp=<%=product.productId%>;
+
+			    var url;
+			 
+               
+
+                    console.log('in else');
+                    url='/addToCart?productid='+temp+'&qty=1';
+             
+                         $.ajax({
+                type: 'GET',
+
+                    contentType: 'application/json',
+                            url: '/addToCart?productid='+temp+'&qty=1',
+                            success: function(data) {
+                                console.log('success');
+                            console.log(data);
+							console.log(data.length);
+							if (data == "empty")
+							{
+							window.location.href = "/SigninRedirect";
+							}
+							if(data.length>0)
+                                {
+                                    $("#jqxNotification").jqxNotification("open");
+
+
+                                }
+                          
+                        }
+                        });
+
+                    // $("#popupWindowNewSubcat").jqxWindow('hide');
+
+
+            });
+			
+		 jQuery('#bidBtn_btn').click(function() {
+		 console.log('In click');
+		
+		  jQuery.ajax({type:'GET',
+						 url:'/checkLoggedInUser',
+						 success:function(data,textStatus){	
+
+
+											
+											
+											if(data == "false"){
+											
+									       
+											window.location.replace("/SigninRedirect");
+											
+											}
+											else if(data == "true"){
+											  
+											   console.log('got the login user');
+											  
+											   if(jQuery('#MaxBidId').val() == null || jQuery('#MaxBidId').val() == "")
+											   {	
+											
+											     jQuery('#bidAlert').html("Please enter the value");
+											   }
+											   else
+											   {
+											    	if(parseFloat(jQuery('#MaxBidId').val()) == NaN)
+													{
+													
+													
+													jQuery('#bidAlert').html("Please enter proper value");
+											 													  
+													}
+													else if(parseFloat(jQuery('#MaxBidId').val()) < nextMinBidPrice){
+													jQuery('#bidAlert').html("Please enter US $"+nextMinBidPrice + " or more");
+													}
+													else if(parseFloat(jQuery('#MaxBidId').val()) >= nextMinBidPrice)
+													{
+													console.log("Congrates perfect bid ");
+													var placedBid = parseFloat(jQuery('#MaxBidId').val())
+													var nextmin = placedBid + ((placedBid * 1)/ 100)
+													jQuery('#bidAlert').html("");
+													jQuery.ajax({type:'POST',
+													 url:'/postBid',
+													 data : {auctionId : <%=auctionId%> , bidPrice : placedBid},
+													 success:function(data,textStatus){
+													 console.log(data);										 												
+																		if(data.result == "true"){
+																	
+																		refreshBid();
+																		//jQuery('#latestBidPrice').html ("US $" + placedBid);
+																		//jQuery('#nextMinimumBid').html("Enter US $"+nextmin + " or more");
+																		//jQuery('#totalPlacedBids').html(totalBids + 1);
+																									
+																		jQuery('#bidAlert').html("");
+																		}
+																		else if(data.result == "false"){
+																		
+																		 jQuery('#bidAlert').html("Error while processing your bid");  
+																		}											
+																	},
+													 error:function(XMLHttpRequest,textStatus,errorThrown){
+													
+													 console.log('In error')
+													 }});
+													
+													
+													
+													}
+													else
+													{
+													jQuery('#bidAlert').html("Please enter proper value");
+											 		
+													}
+											   }
+											}											
+										},
+						 error:function(XMLHttpRequest,textStatus,errorThrown){
+					
+						 console.log('In error');
+						 }});
+	});
+	});
+	</script>
+
+	<script>/*global window */
+/**
+ * @license countdown.js v2.3.4 http://countdownjs.org
+ * Copyright (c)2006-2012 Stephen M. McKamey.
+ * Licensed under The MIT License.
+ */
+/*jshint bitwise:false */
+
+/**
+ * @public
+ * @type {Object|null}
+ */
+var module;
+
+/**
+ * API entry
+ * @public
+ * @param {function(Object)|Date|number} start the starting date
+ * @param {function(Object)|Date|number} end the ending date
+ * @param {number} units the units to populate
+ * @return {Object|number}
+ */
+var countdown = (
+
+/**
+ * @param {Object} module CommonJS Module
+ */
+function(module) {
+	/*jshint smarttabs:true */
+
+	'use strict';
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var MILLISECONDS	= 0x001;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var SECONDS			= 0x002;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var MINUTES			= 0x004;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var HOURS			= 0x008;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var DAYS			= 0x010;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var WEEKS			= 0x020;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var MONTHS			= 0x040;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var YEARS			= 0x080;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var DECADES			= 0x100;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var CENTURIES		= 0x200;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var MILLENNIA		= 0x400;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var DEFAULTS		= YEARS|MONTHS|DAYS|HOURS|MINUTES|SECONDS;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var MILLISECONDS_PER_SECOND = 1000;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var SECONDS_PER_MINUTE = 60;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var MINUTES_PER_HOUR = 60;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var HOURS_PER_DAY = 24;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var MILLISECONDS_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var DAYS_PER_WEEK = 7;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var MONTHS_PER_YEAR = 12;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var YEARS_PER_DECADE = 10;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var DECADES_PER_CENTURY = 10;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var CENTURIES_PER_MILLENNIUM = 10;
+
+	/**
+	 * @private
+	 * @param {number} x number
+	 * @return {number}
+	 */
+	var ceil = Math.ceil;
+
+	/**
+	 * @private
+	 * @param {number} x number
+	 * @return {number}
+	 */
+	var floor = Math.floor;
+
+	/**
+	 * @private
+	 * @param {Date} ref reference date
+	 * @param {number} shift number of months to shift
+	 * @return {number} number of days shifted
+	 */
+	function borrowMonths(ref, shift) {
+		var prevTime = ref.getTime();
+
+		// increment month by shift
+		ref.setUTCMonth( ref.getUTCMonth() + shift );
+
+		// this is the trickiest since months vary in length
+		return Math.round( (ref.getTime() - prevTime) / MILLISECONDS_PER_DAY );
+	}
+
+	/**
+	 * @private
+	 * @param {Date} ref reference date
+	 * @return {number} number of days
+	 */
+	function daysPerMonth(ref) {
+		var a = ref.getTime();
+
+		// increment month by 1
+		var b = new Date(a);
+		b.setUTCMonth( ref.getUTCMonth() + 1 );
+
+		// this is the trickiest since months vary in length
+		return Math.round( (b.getTime() - a) / MILLISECONDS_PER_DAY );
+	}
+
+	/**
+	 * @private
+	 * @param {Date} ref reference date
+	 * @return {number} number of days
+	 */
+	function daysPerYear(ref) {
+		var a = ref.getTime();
+
+		// increment year by 1
+		var b = new Date(a);
+		b.setUTCFullYear( ref.getUTCFullYear() + 1 );
+
+		// this is the trickiest since years (periodically) vary in length
+		return Math.round( (b.getTime() - a) / MILLISECONDS_PER_DAY );
+	}
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var LABEL_MILLISECONDS	= 0;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var LABEL_SECONDS		= 1;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var LABEL_MINUTES		= 2;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var LABEL_HOURS			= 3;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var LABEL_DAYS			= 4;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var LABEL_WEEKS			= 5;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var LABEL_MONTHS		= 6;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var LABEL_YEARS			= 7;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var LABEL_DECADES		= 8;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var LABEL_CENTURIES		= 9;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {number}
+	 */
+	var LABEL_MILLENNIA		= 10;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {Array}
+	 */
+	var LABELS_SINGLUAR;
+
+	/**
+	 * @private
+	 * @const
+	 * @type {Array}
+	 */
+	var LABELS_PLURAL;
+
+	/**
+	 * @private
+	 * @param {number} value
+	 * @param {number} unit unit index into label list
+	 * @return {string}
+	 */
+	function plurality(value, unit) {
+		return value+' '+((value === 1) ? LABELS_SINGLUAR[unit] : LABELS_PLURAL[unit]);
+	}
+
+	/**
+	 * Formats the entries as English labels
+	 * 
+	 * @private
+	 * @param {Timespan} ts
+	 * @return {Array}
+	 */
+	var formatList;
+
+	/**
+	 * Timespan representation of a duration of time
+	 * 
+	 * @private
+	 * @this {Timespan}
+	 * @constructor
+	 */
+	function Timespan() {}
+
+	/**
+	 * Formats the Timespan as a sentance
+	 * 
+	 * @private
+	 * @return {string}
+	 */
+	Timespan.prototype.toString = function() {
+		var label = formatList(this);
+
+		var count = label.length;
+		if (!count) {
+			return '';
+		}
+		if (count > 1) {
+			label[count-1] = 'and '+label[count-1];
+		}
+		return label.join(', ');
+	};
+
+	/**
+	 * Formats the Timespan as HTML
+	 * 
+	 * @private
+	 * @param {string} tag HTML tag name to wrap each value
+	 * @return {string}
+	 */
+	Timespan.prototype.toHTML = function(tag) {
+		tag = tag || 'span';
+		var label = formatList(this);
+
+		var count = label.length;
+		if (!count) {
+			return '';
+		}
+		for (var i=0; i<count; i++) {
+			// wrap each unit in tag
+			label[i] = '<'+tag+'>'+label[i]+'</'+tag+'>';
+		}
+		if (--count) {
+			label[count] = 'and '+label[count];
+		}
+		return label.join(', ');
+	};
+
+	/**
+	 * Formats the entries as English labels
+	 * 
+	 * @private
+	 * @param {Timespan} ts
+	 * @return {Array}
+	 */
+	formatList = function(ts) {
+		var list = [];
+
+		var value = ts.millennia;
+		if (value) {
+			list.push(plurality(value, LABEL_MILLENNIA));
+		}
+
+		value = ts.centuries;
+		if (value) {
+			list.push(plurality(value, LABEL_CENTURIES));
+		}
+
+		value = ts.decades;
+		if (value) {
+			list.push(plurality(value, LABEL_DECADES));
+		}
+
+		value = ts.years;
+		if (value) {
+			list.push(plurality(value, LABEL_YEARS));
+		}
+
+		value = ts.months;
+		if (value) {
+			list.push(plurality(value, LABEL_MONTHS));
+		}
+
+		value = ts.weeks;
+		if (value) {
+			list.push(plurality(value, LABEL_WEEKS));
+		}
+
+		value = ts.days;
+		if (value) {
+			list.push(plurality(value, LABEL_DAYS));
+		}
+
+		value = ts.hours;
+		if (value) {
+			list.push(plurality(value, LABEL_HOURS));
+		}
+
+		value = ts.minutes;
+		if (value) {
+			list.push(plurality(value, LABEL_MINUTES));
+		}
+
+		value = ts.seconds;
+		if (value) {
+			list.push(plurality(value, LABEL_SECONDS));
+		}
+
+		value = ts.milliseconds;
+		if (value) {
+			list.push(plurality(value, LABEL_MILLISECONDS));
+		}
+
+		return list;
+	};
+
+	/**
+	 * Borrow any underflow units, carry any overflow units
+	 * 
+	 * @private
+	 * @param {Timespan} ts
+	 * @param {string} toUnit
+	 */
+	function rippleRounded(ts, toUnit) {
+		switch (toUnit) {
+			case 'seconds':
+				if (ts.seconds !== SECONDS_PER_MINUTE || isNaN(ts.minutes)) {
+					return;
+				}
+				// ripple seconds up to minutes
+				ts.minutes++;
+				ts.seconds = 0;
+
+				/* falls through */
+			case 'minutes':
+				if (ts.minutes !== MINUTES_PER_HOUR || isNaN(ts.hours)) {
+					return;
+				}
+				// ripple minutes up to hours
+				ts.hours++;
+				ts.minutes = 0;
+
+				/* falls through */
+			case 'hours':
+				if (ts.hours !== HOURS_PER_DAY || isNaN(ts.days)) {
+					return;
+				}
+				// ripple hours up to days
+				ts.days++;
+				ts.hours = 0;
+
+				/* falls through */
+			case 'days':
+				if (ts.days !== DAYS_PER_WEEK || isNaN(ts.weeks)) {
+					return;
+				}
+				// ripple days up to weeks
+				ts.weeks++;
+				ts.days = 0;
+
+				/* falls through */
+			case 'weeks':
+				if (ts.weeks !== daysPerMonth(ts.refMonth)/DAYS_PER_WEEK || isNaN(ts.months)) {
+					return;
+				}
+				// ripple weeks up to months
+				ts.months++;
+				ts.weeks = 0;
+
+				/* falls through */
+			case 'months':
+				if (ts.months !== MONTHS_PER_YEAR || isNaN(ts.years)) {
+					return;
+				}
+				// ripple months up to years
+				ts.years++;
+				ts.months = 0;
+
+				/* falls through */
+			case 'years':
+				if (ts.years !== YEARS_PER_DECADE || isNaN(ts.decades)) {
+					return;
+				}
+				// ripple years up to decades
+				ts.decades++;
+				ts.years = 0;
+
+				/* falls through */
+			case 'decades':
+				if (ts.decades !== DECADES_PER_CENTURY || isNaN(ts.centuries)) {
+					return;
+				}
+				// ripple decades up to centuries
+				ts.centuries++;
+				ts.decades = 0;
+
+				/* falls through */
+			case 'centuries':
+				if (ts.centuries !== CENTURIES_PER_MILLENNIUM || isNaN(ts.millennia)) {
+					return;
+				}
+				// ripple centuries up to millennia
+				ts.millennia++;
+				ts.centuries = 0;
+				/* falls through */
+			}
+	}
+
+	/**
+	 * Ripple up partial units one place
+	 * 
+	 * @private
+	 * @param {Timespan} ts timespan
+	 * @param {number} frac accumulated fractional value
+	 * @param {string} fromUnit source unit name
+	 * @param {string} toUnit target unit name
+	 * @param {number} conversion multiplier between units
+	 * @param {number} digits max number of decimal digits to output
+	 * @return {number} new fractional value
+	 */
+	function fraction(ts, frac, fromUnit, toUnit, conversion, digits) {
+		if (ts[fromUnit] >= 0) {
+			frac += ts[fromUnit];
+			delete ts[fromUnit];
+		}
+
+		frac /= conversion;
+		if (frac + 1 <= 1) {
+			// drop if below machine epsilon
+			return 0;
+		}
+
+		if (ts[toUnit] >= 0) {
+			// ensure does not have more than specified number of digits
+			ts[toUnit] = +(ts[toUnit] + frac).toFixed(digits);
+			rippleRounded(ts, toUnit);
+			return 0;
+		}
+
+		return frac;
+	}
+
+	/**
+	 * Ripple up partial units to next existing
+	 * 
+	 * @private
+	 * @param {Timespan} ts
+	 * @param {number} digits max number of decimal digits to output
+	 */
+	function fractional(ts, digits) {
+		var frac = fraction(ts, 0, 'milliseconds', 'seconds', MILLISECONDS_PER_SECOND, digits);
+		if (!frac) { return; }
+
+		frac = fraction(ts, frac, 'seconds', 'minutes', SECONDS_PER_MINUTE, digits);
+		if (!frac) { return; }
+
+		frac = fraction(ts, frac, 'minutes', 'hours', MINUTES_PER_HOUR, digits);
+		if (!frac) { return; }
+
+		frac = fraction(ts, frac, 'hours', 'days', HOURS_PER_DAY, digits);
+		if (!frac) { return; }
+
+		frac = fraction(ts, frac, 'days', 'weeks', DAYS_PER_WEEK, digits);
+		if (!frac) { return; }
+
+		frac = fraction(ts, frac, 'weeks', 'months', daysPerMonth(ts.refMonth)/DAYS_PER_WEEK, digits);
+		if (!frac) { return; }
+
+		frac = fraction(ts, frac, 'months', 'years', daysPerYear(ts.refMonth)/daysPerMonth(ts.refMonth), digits);
+		if (!frac) { return; }
+
+		frac = fraction(ts, frac, 'years', 'decades', YEARS_PER_DECADE, digits);
+		if (!frac) { return; }
+
+		frac = fraction(ts, frac, 'decades', 'centuries', DECADES_PER_CENTURY, digits);
+		if (!frac) { return; }
+
+		frac = fraction(ts, frac, 'centuries', 'millennia', CENTURIES_PER_MILLENNIUM, digits);
+
+		// should never reach this with remaining fractional value
+		if (frac) { throw new Error('Fractional unit overflow'); }
+	}
+
+	/**
+	 * Borrow any underflow units, carry any overflow units
+	 * 
+	 * @private
+	 * @param {Timespan} ts
+	 */
+	function ripple(ts) {
+		var x;
+
+		if (ts.milliseconds < 0) {
+			// ripple seconds down to milliseconds
+			x = ceil(-ts.milliseconds / MILLISECONDS_PER_SECOND);
+			ts.seconds -= x;
+			ts.milliseconds += x * MILLISECONDS_PER_SECOND;
+
+		} else if (ts.milliseconds >= MILLISECONDS_PER_SECOND) {
+			// ripple milliseconds up to seconds
+			ts.seconds += floor(ts.milliseconds / MILLISECONDS_PER_SECOND);
+			ts.milliseconds %= MILLISECONDS_PER_SECOND;
+		}
+
+		if (ts.seconds < 0) {
+			// ripple minutes down to seconds
+			x = ceil(-ts.seconds / SECONDS_PER_MINUTE);
+			ts.minutes -= x;
+			ts.seconds += x * SECONDS_PER_MINUTE;
+
+		} else if (ts.seconds >= SECONDS_PER_MINUTE) {
+			// ripple seconds up to minutes
+			ts.minutes += floor(ts.seconds / SECONDS_PER_MINUTE);
+			ts.seconds %= SECONDS_PER_MINUTE;
+		}
+
+		if (ts.minutes < 0) {
+			// ripple hours down to minutes
+			x = ceil(-ts.minutes / MINUTES_PER_HOUR);
+			ts.hours -= x;
+			ts.minutes += x * MINUTES_PER_HOUR;
+
+		} else if (ts.minutes >= MINUTES_PER_HOUR) {
+			// ripple minutes up to hours
+			ts.hours += floor(ts.minutes / MINUTES_PER_HOUR);
+			ts.minutes %= MINUTES_PER_HOUR;
+		}
+
+		if (ts.hours < 0) {
+			// ripple days down to hours
+			x = ceil(-ts.hours / HOURS_PER_DAY);
+			ts.days -= x;
+			ts.hours += x * HOURS_PER_DAY;
+
+		} else if (ts.hours >= HOURS_PER_DAY) {
+			// ripple hours up to days
+			ts.days += floor(ts.hours / HOURS_PER_DAY);
+			ts.hours %= HOURS_PER_DAY;
+		}
+
+		while (ts.days < 0) {
+			// NOTE: never actually seen this loop more than once
+
+			// ripple months down to days
+			ts.months--;
+			ts.days += borrowMonths(ts.refMonth, 1);
+		}
+
+		// weeks is always zero here
+
+		if (ts.days >= DAYS_PER_WEEK) {
+			// ripple days up to weeks
+			ts.weeks += floor(ts.days / DAYS_PER_WEEK);
+			ts.days %= DAYS_PER_WEEK;
+		}
+
+		if (ts.months < 0) {
+			// ripple years down to months
+			x = ceil(-ts.months / MONTHS_PER_YEAR);
+			ts.years -= x;
+			ts.months += x * MONTHS_PER_YEAR;
+
+		} else if (ts.months >= MONTHS_PER_YEAR) {
+			// ripple months up to years
+			ts.years += floor(ts.months / MONTHS_PER_YEAR);
+			ts.months %= MONTHS_PER_YEAR;
+		}
+
+		// years is always non-negative here
+		// decades, centuries and millennia are always zero here
+
+		if (ts.years >= YEARS_PER_DECADE) {
+			// ripple years up to decades
+			ts.decades += floor(ts.years / YEARS_PER_DECADE);
+			ts.years %= YEARS_PER_DECADE;
+
+			if (ts.decades >= DECADES_PER_CENTURY) {
+				// ripple decades up to centuries
+				ts.centuries += floor(ts.decades / DECADES_PER_CENTURY);
+				ts.decades %= DECADES_PER_CENTURY;
+
+				if (ts.centuries >= CENTURIES_PER_MILLENNIUM) {
+					// ripple centuries up to millennia
+					ts.millennia += floor(ts.centuries / CENTURIES_PER_MILLENNIUM);
+					ts.centuries %= CENTURIES_PER_MILLENNIUM;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Remove any units not requested
+	 * 
+	 * @private
+	 * @param {Timespan} ts
+	 * @param {number} units the units to populate
+	 * @param {number} max number of labels to output
+	 * @param {number} digits max number of decimal digits to output
+	 */
+	function pruneUnits(ts, units, max, digits) {
+		var count = 0;
+
+		// Calc from largest unit to smallest to prevent underflow
+		if (!(units & MILLENNIA) || (count >= max)) {
+			// ripple millennia down to centuries
+			ts.centuries += ts.millennia * CENTURIES_PER_MILLENNIUM;
+			delete ts.millennia;
+
+		} else if (ts.millennia) {
+			count++;
+		}
+
+		if (!(units & CENTURIES) || (count >= max)) {
+			// ripple centuries down to decades
+			ts.decades += ts.centuries * DECADES_PER_CENTURY;
+			delete ts.centuries;
+
+		} else if (ts.centuries) {
+			count++;
+		}
+
+		if (!(units & DECADES) || (count >= max)) {
+			// ripple decades down to years
+			ts.years += ts.decades * YEARS_PER_DECADE;
+			delete ts.decades;
+
+		} else if (ts.decades) {
+			count++;
+		}
+
+		if (!(units & YEARS) || (count >= max)) {
+			// ripple years down to months
+			ts.months += ts.years * MONTHS_PER_YEAR;
+			delete ts.years;
+
+		} else if (ts.years) {
+			count++;
+		}
+
+		if (!(units & MONTHS) || (count >= max)) {
+			// ripple months down to days
+			if (ts.months) {
+				ts.days += borrowMonths(ts.refMonth, ts.months);
+			}
+			delete ts.months;
+
+			if (ts.days >= DAYS_PER_WEEK) {
+				// ripple day overflow back up to weeks
+				ts.weeks += floor(ts.days / DAYS_PER_WEEK);
+				ts.days %= DAYS_PER_WEEK;
+			}
+
+		} else if (ts.months) {
+			count++;
+		}
+
+		if (!(units & WEEKS) || (count >= max)) {
+			// ripple weeks down to days
+			ts.days += ts.weeks * DAYS_PER_WEEK;
+			delete ts.weeks;
+
+		} else if (ts.weeks) {
+			count++;
+		}
+
+		if (!(units & DAYS) || (count >= max)) {
+			//ripple days down to hours
+			ts.hours += ts.days * HOURS_PER_DAY;
+			delete ts.days;
+
+		} else if (ts.days) {
+			count++;
+		}
+
+		if (!(units & HOURS) || (count >= max)) {
+			// ripple hours down to minutes
+			ts.minutes += ts.hours * MINUTES_PER_HOUR;
+			delete ts.hours;
+
+		} else if (ts.hours) {
+			count++;
+		}
+
+		if (!(units & MINUTES) || (count >= max)) {
+			// ripple minutes down to seconds
+			ts.seconds += ts.minutes * SECONDS_PER_MINUTE;
+			delete ts.minutes;
+
+		} else if (ts.minutes) {
+			count++;
+		}
+
+		if (!(units & SECONDS) || (count >= max)) {
+			// ripple seconds down to milliseconds
+			ts.milliseconds += ts.seconds * MILLISECONDS_PER_SECOND;
+			delete ts.seconds;
+
+		} else if (ts.seconds) {
+			count++;
+		}
+
+		// nothing to ripple milliseconds down to
+		// so ripple back up to smallest existing unit as a fractional value
+		if (!(units & MILLISECONDS) || (count >= max)) {
+			fractional(ts, digits);
+		}
+	}
+
+	/**
+	 * Populates the Timespan object
+	 * 
+	 * @private
+	 * @param {Timespan} ts
+	 * @param {Date} start the starting date
+	 * @param {Date} end the ending date
+	 * @param {number} units the units to populate
+	 * @param {number} max number of labels to output
+	 * @param {number} digits max number of decimal digits to output
+	 */
+	function populate(ts, start, end, units, max, digits) {
+		ts.start = start;
+		ts.end = end;
+		ts.units = units;
+
+		ts.value = end.getTime() - start.getTime();
+		if (ts.value < 0) {
+			// swap if reversed
+			var temp = end;
+			end = start;
+			start = temp;
+		}
+
+		// reference month for determining days in month
+		ts.refMonth = new Date(start.getFullYear(), start.getMonth(), 15);
+		try {
+			// reset to initial deltas
+			ts.millennia = 0;
+			ts.centuries = 0;
+			ts.decades = 0;
+			ts.years = end.getUTCFullYear() - start.getUTCFullYear();
+			ts.months = end.getUTCMonth() - start.getUTCMonth();
+			ts.weeks = 0;
+			ts.days = end.getUTCDate() - start.getUTCDate();
+			ts.hours = end.getUTCHours() - start.getUTCHours();
+			ts.minutes = end.getUTCMinutes() - start.getUTCMinutes();
+			ts.seconds = end.getUTCSeconds() - start.getUTCSeconds();
+			ts.milliseconds = end.getUTCMilliseconds() - start.getUTCMilliseconds();
+
+			ripple(ts);
+			pruneUnits(ts, units, max, digits);
+
+		} finally {
+			delete ts.refMonth;
+		}
+
+		return ts;
+	}
+
+	/**
+	 * Determine an appropriate refresh rate based upon units
+	 * 
+	 * @private
+	 * @param {number} units the units to populate
+	 * @return {number} milliseconds to delay
+	 */
+	function getDelay(units) {
+		if (units & MILLISECONDS) {
+			// refresh very quickly
+			return MILLISECONDS_PER_SECOND / 30; //30Hz
+		}
+
+		if (units & SECONDS) {
+			// refresh every second
+			return MILLISECONDS_PER_SECOND; //1Hz
+		}
+
+		if (units & MINUTES) {
+			// refresh every minute
+			return MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE;
+		}
+
+		if (units & HOURS) {
+			// refresh hourly
+			return MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+		}
+		
+		if (units & DAYS) {
+			// refresh daily
+			return MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY;
+		}
+
+		// refresh the rest weekly
+		return MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY * DAYS_PER_WEEK;
+	}
+
+	/**
+	 * API entry point
+	 * 
+	 * @public
+	 * @param {Date|number|null|function(Timespan,number)} start the starting date
+	 * @param {Date|number|null|function(Timespan,number)} end the ending date
+	 * @param {number} units the units to populate
+	 * @param {number} max number of labels to output
+	 * @param {number} digits max number of decimal digits to output
+	 * @return {Timespan|number}
+	 */
+	function countdown(start, end, units, max, digits) {
+		var callback;
+
+		// ensure some units or use defaults
+		units = +units || DEFAULTS;
+		// max must be positive
+		max = (max > 0) ? max : NaN;
+		// clamp digits to an integer between [0, 20]
+		digits = (digits > 0) ? (digits < 20) ? Math.round(digits) : 20 : 0;
+
+		// ensure start date
+		if ('function' === typeof start) {
+			callback = start;
+			start = null;
+
+		} else if (!(start instanceof Date)) {
+			start = (start !== null && isFinite(start)) ? new Date(start) : null;
+		}
+
+		// ensure end date
+		if ('function' === typeof end) {
+			callback = end;
+			end = null;
+
+		} else if (!(end instanceof Date)) {
+			end = (end !== null && isFinite(end)) ? new Date(end) : null;
+		}
+
+		if (!start && !end) {
+			// used for unit testing
+			return new Timespan();
+		}
+
+		if (!callback) {
+			return populate(new Timespan(), /** @type{Date} */(start||new Date()), /** @type{Date} */(end||new Date()), units, max, digits);
+		}
+
+		// base delay off units
+		var delay = getDelay(units),
+			timerId,
+			fn = function() {
+				callback(
+					populate(new Timespan(), /** @type{Date} */(start||new Date()), /** @type{Date} */(end||new Date()), units, max, digits),
+					timerId
+				);
+			};
+
+		fn();
+		return (timerId = setInterval(fn, delay));
+	}
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.MILLISECONDS = MILLISECONDS;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.SECONDS = SECONDS;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.MINUTES = MINUTES;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.HOURS = HOURS;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.DAYS = DAYS;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.WEEKS = WEEKS;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.MONTHS = MONTHS;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.YEARS = YEARS;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.DECADES = DECADES;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.CENTURIES = CENTURIES;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.MILLENNIA = MILLENNIA;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.DEFAULTS = DEFAULTS;
+
+	/**
+	 * @public
+	 * @const
+	 * @type {number}
+	 */
+	countdown.ALL = MILLENNIA|CENTURIES|DECADES|YEARS|MONTHS|WEEKS|DAYS|HOURS|MINUTES|SECONDS|MILLISECONDS;
+
+	/**
+	 * Override the unit labels
+	 * @public
+	 * @param {string|Array} singular a pipe ('|') delimited list of singular unit name overrides
+	 * @param {string|Array} plural a pipe ('|') delimited list of plural unit name overrides
+	 */
+	var setLabels = countdown.setLabels = function(singular, plural) {
+		singular = singular || [];
+		if (singular.split) {
+			singular = singular.split('|');
+		}
+		plural = plural || [];
+		if (plural.split) {
+			plural = plural.split('|');
+		}
+
+		for (var i=LABEL_MILLISECONDS; i<=LABEL_MILLENNIA; i++) {
+			// override any specified units
+			LABELS_SINGLUAR[i] = singular[i] || LABELS_SINGLUAR[i];
+			LABELS_PLURAL[i] = plural[i] || LABELS_PLURAL[i];
+		}
+	};
+
+	/**
+	 * Revert to the default unit labels
+	 * @public
+	 */
+	var resetLabels = countdown.resetLabels = function() {
+		LABELS_SINGLUAR = 'millisecond|second|minute|hour|day|week|month|year|decade|century|millennium'.split('|');
+		LABELS_PLURAL = 'milliseconds|seconds|minutes|hours|days|weeks|months|years|decades|centuries|millennia'.split('|');
+	};
+
+	resetLabels();
+
+	if (module && module.exports) {
+		module.exports = countdown;
+
+	} else if (typeof window.define === 'function' && window.define.amd) {
+		window.define('countdown', [], function() {
+			return countdown;
+		});
+	}
+
+	return countdown;
+
+})(module);  
+</script>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+    $( document ).ready(function() {
+        console.log( "document loaded" );
+                 $("#header5").load("header2"); 
+    });
+ 
+    $( window ).load(function() {
+        console.log( "window loaded" );
+    });
+</script>
+	 
+	
+<title>Mens Puma Shoes &quot;Tempo&quot; Size 13 Never Worn |
+	eBay</title>
+<link rel="alternate" media="only screen and (max-width: 640px)"
+	href="http://m.ebay.com/itm/MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN-/191427248555"></link>
+
+<link rel="canonical"
+	href="http://www.ebay.com/itm/MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN-/191427248555"></link>
+
+
+<link
+	href="http://ir.ebaystatic.com/rs/v/cakcqsm3fe1djpkblj5vzypxuml.css"
+	type="text/css" rel="stylesheet">
+<link
+	href="http://ir.ebaystatic.com/rs/v/pn5r4hbtoyyxhbnzwbvkw05qouv.css"
+	type="text/css" rel="stylesheet">
+<link
+	href="http://ir.ebaystatic.com/rs/v/uew4nwskxqzqpb4xa3xse0yepml.css"
+	type="text/css" rel="stylesheet">
+<style type="text/css">
+body .is.vi-ppc-main .mm-dp {
+	width: 35%;
+}
+</style>
+<script type="text/javascript" src="/jqwidgets/jqxcore.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxdata.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxbuttons.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxscrollbar.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxmenu.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.pager.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.selection.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxnumberinput.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxwindow.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxlistbox.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxdropdownlist.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxinput.js"></script>
+        <script type="text/javascript" src="/scripts/demos.js"></script>
+        <script type="text/javascript" src="/generatedata.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.columnsresize.js"></script>
+        <script type="text/javascript" src="../../jqwidgets/jqxswitchbutton.js"></script>
+        <script type="text/javascript" src="../../jqwidgets/jqxcheckbox.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxnotification.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxpanel.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdatatable.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxtabs.js"></script>
+	 <link rel='stylesheet' href='/stylesheets/style.css' />
+<link rel="stylesheet" href="/styles/jqx.base.css" type="text/css" />
+</head>
+<body class=" vi-contv2  lhdr-ie- vi-hd-ops  ">
+
+	<!-- Default filmstrip js used with main image -->
+	<!-- adding filmstrip js used in main pic and with images carousel  -->
+	<div id="header2"></div>
+<div id='jqxWidget'>
+    <div id="jqxNotification">
+                          <div>
+                              Item added to cart.</div>
+                        <!--  <div style="font-size: smaller; text-align: center;">
+                              Click to view.</div>-->
+                     </div> </div>
+
+	
+	<div id="CenterPanelDF">
+			<div id="CenterPanel" class="ebaylocale_en_US ebay_longlngsite   ">
+				<style>
+/* PicturePanel */
+#PicturePanel div.img {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+/* BuyBox */
+.actPanel {
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+
+.watchListCmp {
+	border-bottom: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+</style>
+				<h3 class="vi-inheritstyl">
+					<!-- msgType.code eq 3 -->
+					<div class="tmpnl">
+						<div id="msgPanel" class="pnl u-dspn">
+							<div class="msg ">
+								<div class="msgPad " aria-relevant="all" aria-atomic="true"
+									aria-live="assertive">
+									<span id="w1-4-_msg" class="msgTextAlign"></span> <span
+										id="listPanel"> <span id="w1-5-_lmsgC" class="u-dspn">
+
+											<span id="w1-5-_lmsg"></span> <span id="w1-5-_rmvC"
+											style="display: none;"> <span class="addSpace">|</span>
+												<a id="w1-5-_rmv" class="vi_lst_tpm_rmv" href="javascript:;"></a>
+										</span> <span id="vi_watch_msg_ph"> <span class="addSpace">|</span>
+												<span class="viWatcherMsg"></span>
+										</span>
+
+											<div id="w1-5-_lstP" class="lpnl ">
+												<div class="scroll">
+													<div id="w1-5-_lstC" class="listC"></div>
+												</div>
+											</div>
+									</span> <!-- TODO: set myebay url  -->
+
+									</span>
+								</div>
+
+							</div>
+						</div>
+						<div id="listingHistory"></div>
+						<div id="otherMsg"></div>
+					</div>
+
+				</h3>
+
+
+				<div id="vi_sme_prmts_bnr_cntr"></div>
+				<!-- Placement 100011 && 100012 -->
+				<div id="CenterPanelInternal">
+					<div id="PicturePanel" class="pp-c">
+						<h3 class="g-hdn">Picture Information</h3>
+						<div class="pp-ic pp-ic500">
+							<div class="l-shad lftd  img img500" style="margin-left:10px">
+								<table class="img img500">
+									<tbody>
+										<tr>
+											<td class="img img500">
+												<div id="test">
+													<!-- test -->
+												</div>
+												<script type="text/javascript">var sPT = new Date().getTime(),picTimer,picTimer1,picTimer2;
+												
+												</script>
+												<a id="linkMainImg" href="javascript:;"
+												style="display: block; cursor: default; text-decoration: none;">
+													<div id="mainImgHldr" style="width: 500px"
+														title="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN">
+														<!-- <span id="mainImgHldr" style="display: inline-block;"> -->
+														<img id="icThrImg" class="img img500 vi-hide-mImgThr"
+															style="display: none;"
+															src="images/32.jpg"
+															imgsel="0" alt="Image is loading" /> <img id="icImg"
+															class="img img500" itemprop="image"
+															src="images/<%=product.productId%>.jpg"
+															style="" onload="picTimer=new Date().getTime();" clk=""
+															alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+														<!-- </span> -->
+													</div>
+											</a> <span id="imgNATxt" class="imgNa">Image not available</span>
+												<span id="varImgNATxt" class="imgNa" style="display: none">Photos
+													not available for this variation</span>
+												<noscript>
+													<style type="text/css">
+.vi-hide-mImgThr {
+	display: none;
+}
+</style>
+													<img id="icImg" class="img img500" itemprop="image"
+														src="http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/yPoAAOSwQJ5UTv~J/$_12.JPG"
+														style="" clk=""
+														alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+												</noscript> <script type="text/javascript">
+							function picOnLoad(isSetClkId){
+								var elem = document.getElementById('icThrImg'); 
+								var pic = document.getElementById('icImg'); 
+								elem.style.display = 'none'; 
+								pic.style.display = ''; 
+								if(isSetClkId) {
+									pic.setAttribute('clk', elem.getAttribute('imgsel'));	
+								} 
+								document.getElementById('imgNATxt').style.display = 'none';
+								return;
+							}
+							function picOnError(){
+								var elemThr = document.getElementById('icThrImg');
+								var pic = document.getElementById('icImg'); 
+								elemThr.src='http://p.ebaystatic.com/aw/pics/cmp/icn/iconImgNA_96x96.gif'; 
+								elemThr.style.display = ''; 
+								pic.style.display = 'none'; 
+								pic.setAttribute('clk', elemThr.getAttribute('imgsel')); 
+								document.getElementById('imgNATxt').style.display = 'block';
+								return;
+							}
+							var image = document.createElement('img');
+							image.src= 'http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/yPoAAOSwQJ5UTv~J/$_12.JPG';
+							if(image.complete ||  image.readyState === 4){
+								picTimer2=new Date().getTime();
+								picOnLoad(true);
+							}else{
+							    image.onload = function(){ 
+							    	picTimer1=new Date().getTime();
+							    	picOnLoad(true);
+							    };
+							    image.onerror = function(){ 
+									picOnError();	
+								};
+							}
+							image.onerror = function(){ 
+								picOnError();	
+							};
+						</script>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="spr"></div>
+							<div class="u-cb" style="height: 20px;"></div>
+							<div class="pt-p" style="visibility: hidden;"
+								id="zoom_enlarge_msg_cnt">
+								<span class="pt-i pt-tx  " id="zoom_enlarge_msg"
+									href="javascript:;"></span>
+							</div>
+							<div id="vi_zoom_trigger_mask" class="zoom_trigger_mask">
+								<div id="vi_zoom_trigger_mrk">
+									<div class="vi_zoom_trigger_msg">
+										<table>
+											<tr>
+												<td><b
+													style="display: block; font-family: 'Helvetica neue', Helvetica, Arial, Verdana, Sans-serif; font-size: 12px;">Mouse
+														over to Zoom<br>-<br>Click to enlarge
+												</b></td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+
+							<span id="zoom_selector" class="zoom_slct"></span>
+
+							<div id="zoom_img_mask" class="zoom_mask"></div>
+
+							<div id="zoom_main_cntr" class="zoom_cntr">
+								<div id="zoom_main_img_cntr" class="zoom_img_cntr">
+									<img id="zoom_main_img" style="display: none;" alt=""
+										src="http://ir.ebaystatic.com/pictures/aw/pics/s.gif">
+								</div>
+							</div>
+							<div class="vi_pl_panel" id="viEnlargeImgLayer">
+								<button class="vi_pl_cls_btn">X</button>
+								<div class="vi_img_crsl_cmp">
+									<div class="vi_img_crsl_imgpl ">
+										<a title="To Previous Image" aria-label="To Previous Image"
+											class="pntrArr pntrArrPrev pntrArrImg activePrev"
+											href="javascript:;"></a>
+										<table class="vi_img_crsl_tbl">
+											<tbody>
+												<tr>
+													<td class="vi_img_crsl_tbl">
+														<div class="vi_img_crsl_ctr">
+															<img id="viEnlargeImgLayer_img_ctr" alt=""
+																src="http://ir.ebaystatic.com/pictures/aw/pics/s.gif"
+																clk="">
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<a title="To Next Image" aria-label="To Next Image"
+											class="pntrArr pntrArrNext pntrArrImg activeNext"
+											href="javascript:;"></a>
+									</div>
+								</div>
+
+								<div class="vi_img_crsl_fspl_trg">
+									<div class="vi_img_crsl_fspl vi_crsl_fspl_blk">
+										<div style="width: 100%; padding-top: 15px;">
+											<div id="viEnlargeImgLayer_layer_fs_slider"
+												class="vi-filmstp" style="width: 500px">
+												<a href="javascript:;" class="gspr flm-btn pre "></a>
+												<div id="viEnlargeImgLayer_layer_fs" class="fs_imgc"
+													style="">
+													<ul class="lst icon">
+														<li><a id="viEnlargeImgLayer_layer_fs_thImg0"
+															href="javascript:;"
+															title="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN"
+															class="pic pic1">
+																<table class="img">
+																	<tr>
+																		<td class="tdThumb" style="height: 64px;">
+																			<div>
+																				<img
+																					src="http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/yPoAAOSwQJ5UTv~J/$_14.JPG"
+																					style="max-width: 64px; max-height: 64px" index="0"
+																					onerror="try{this.src='http://p.ebaystatic.com/aw/pics/cmp/icn/iconImgNA_96x96.gif';}catch(e){}"
+																					alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+																			</div>
+																		</td>
+																	</tr>
+																</table>
+														</a></li>
+														<li><a id="viEnlargeImgLayer_layer_fs_thImg1"
+															href="javascript:;"
+															title="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN"
+															class="pic pic1">
+																<table class="img">
+																	<tr>
+																		<td class="tdThumb" style="height: 64px;">
+																			<div>
+																				<img
+																					src="http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/EVYAAOSwR0JUTv~O/$_14.JPG"
+																					style="max-width: 64px; max-height: 64px" index="1"
+																					onerror="try{this.src='http://p.ebaystatic.com/aw/pics/cmp/icn/iconImgNA_96x96.gif';}catch(e){}"
+																					alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+																			</div>
+																		</td>
+																	</tr>
+																</table>
+														</a></li>
+														<li><a id="viEnlargeImgLayer_layer_fs_thImg2"
+															href="javascript:;"
+															title="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN"
+															class="pic pic1">
+																<table class="img">
+																	<tr>
+																		<td class="tdThumb" style="height: 64px;">
+																			<div>
+																				<img
+																					src="http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/VeMAAOSwU9xUTv~a/$_14.JPG"
+																					style="max-width: 64px; max-height: 64px" index="2"
+																					onerror="try{this.src='http://p.ebaystatic.com/aw/pics/cmp/icn/iconImgNA_96x96.gif';}catch(e){}"
+																					alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+																			</div>
+																		</td>
+																	</tr>
+																</table>
+														</a></li>
+														<li><a id="viEnlargeImgLayer_layer_fs_thImg3"
+															href="javascript:;"
+															title="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN"
+															class="pic pic1">
+																<table class="img">
+																	<tr>
+																		<td class="tdThumb" style="height: 64px;">
+																			<div>
+																				<img
+																					src="http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/xTEAAOSwcu5UTv~o/$_14.JPG"
+																					style="max-width: 64px; max-height: 64px" index="3"
+																					onerror="try{this.src='http://p.ebaystatic.com/aw/pics/cmp/icn/iconImgNA_96x96.gif';}catch(e){}"
+																					alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+																			</div>
+																		</td>
+																	</tr>
+																</table>
+														</a></li>
+														<li><a id="viEnlargeImgLayer_layer_fs_thImg4"
+															href="javascript:;"
+															title="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN"
+															class="pic pic1">
+																<table class="img">
+																	<tr>
+																		<td class="tdThumb" style="height: 64px;">
+																			<div>
+																				<img
+																					src="http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/zusAAOSwQJ5UTwAF/$_14.JPG"
+																					style="max-width: 64px; max-height: 64px" index="4"
+																					onerror="try{this.src='http://p.ebaystatic.com/aw/pics/cmp/icn/iconImgNA_96x96.gif';}catch(e){}"
+																					alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+																			</div>
+																		</td>
+																	</tr>
+																</table>
+														</a></li>
+													</ul>
+												</div>
+												<a href="javascript:;" class="gspr flm-btn nxt "></a>
+												<div class="sel hide"></div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div id="vi_main_img_fs_slider" class="vi-filmstp"
+								style="width: 500px">
+								<a href="javascript:;" class="gspr flm-btn pre hide"></a>
+								<div id="vi_main_img_fs" class="fs_imgc"
+									style="height: 79px; width: 376px">
+									<ul class="lst icon">
+										<li><a id="vi_main_img_fs_thImg0" href="javascript:;"
+											title="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN"
+											class="pic pic1">
+												<table class="img">
+													<tr>
+														<td class="tdThumb" style="height: 64px;">
+															<div>
+																<img
+																	src="http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/yPoAAOSwQJ5UTv~J/$_14.JPG"
+																	style="max-width: 64px; max-height: 64px" index="0"
+																	onerror="try{this.src='http://p.ebaystatic.com/aw/pics/cmp/icn/iconImgNA_96x96.gif';}catch(e){}"
+																	alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+															</div>
+														</td>
+													</tr>
+												</table>
+										</a></li>
+										<li><a id="vi_main_img_fs_thImg1" href="javascript:;"
+											title="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN"
+											class="pic pic1">
+												<table class="img">
+													<tr>
+														<td class="tdThumb" style="height: 64px;">
+															<div>
+																<img
+																	src="http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/EVYAAOSwR0JUTv~O/$_14.JPG"
+																	style="max-width: 64px; max-height: 64px" index="1"
+																	onerror="try{this.src='http://p.ebaystatic.com/aw/pics/cmp/icn/iconImgNA_96x96.gif';}catch(e){}"
+																	alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+															</div>
+														</td>
+													</tr>
+												</table>
+										</a></li>
+										<li><a id="vi_main_img_fs_thImg2" href="javascript:;"
+											title="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN"
+											class="pic pic1">
+												<table class="img">
+													<tr>
+														<td class="tdThumb" style="height: 64px;">
+															<div>
+																<img
+																	src="http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/VeMAAOSwU9xUTv~a/$_14.JPG"
+																	style="max-width: 64px; max-height: 64px" index="2"
+																	onerror="try{this.src='http://p.ebaystatic.com/aw/pics/cmp/icn/iconImgNA_96x96.gif';}catch(e){}"
+																	alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+															</div>
+														</td>
+													</tr>
+												</table>
+										</a></li>
+										<li><a id="vi_main_img_fs_thImg3" href="javascript:;"
+											title="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN"
+											class="pic pic1">
+												<table class="img">
+													<tr>
+														<td class="tdThumb" style="height: 64px;">
+															<div>
+																<img
+																	src="http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/xTEAAOSwcu5UTv~o/$_14.JPG"
+																	style="max-width: 64px; max-height: 64px" index="3"
+																	onerror="try{this.src='http://p.ebaystatic.com/aw/pics/cmp/icn/iconImgNA_96x96.gif';}catch(e){}"
+																	alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+															</div>
+														</td>
+													</tr>
+												</table>
+										</a></li>
+										<li><a id="vi_main_img_fs_thImg4" href="javascript:;"
+											title="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN"
+											class="pic pic1">
+												<table class="img">
+													<tr>
+														<td class="tdThumb" style="height: 64px;">
+															<div>
+																<img
+																	src="http://i.ebayimg.com/00/s/MTIwMFgxNjAw/z/zusAAOSwQJ5UTwAF/$_14.JPG"
+																	style="max-width: 64px; max-height: 64px" index="4"
+																	onerror="try{this.src='http://p.ebaystatic.com/aw/pics/cmp/icn/iconImgNA_96x96.gif';}catch(e){}"
+																	alt="MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN" />
+															</div>
+														</td>
+													</tr>
+												</table>
+										</a></li>
+									</ul>
+								</div>
+								<a href="javascript:;" class="gspr flm-btn nxt hide"></a>
+								<div class="sel hide"></div>
+							</div>
+
+						</div>
+						<div class="vi-pbh" style="margin-top: 10px;">
+							<center>
+								<table>
+									<tr>
+										<td width="" style="text-align: centervertical-align:top;">
+											<div class="vi-slt-c vi-slt-instSale-us">
+												<i></i><b>Have one to sell?</b> <span> <a
+													role="button" _sp='p2047675.l2567' id="inst_sale_btn"
+													style="" class="btn btn-ter btn-m "
+													href="http://cgi5.ebay.com/ws/eBayISAPI.dll?SellLikeItem&item=191427248555&rt=nc&_trksid=p2047675.l2567"
+													vib="vib" rel="nofollow"> Sell now</a>
+												</span>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</center>
+						</div>
+					</div>
+
+					<a name="mainContent" tabindex="-1"></a>
+					<div style="">
+						<h1 class="it-ttl" itemprop="name" id="itemTitle">
+							<span class="g-hdn">Details about &nbsp;</span> <%=product.name%>
+						</h1>
+						<!-- DO NOT change linkToTagId="rwid" as the catalog response has this ID set  -->
+					</div>
+					<div class="it-rlBr  it-rlBr500 " style=""></div>
+				
+					<div id="RightSummaryPanel" class="rsp-c">
+						<div class="share si-cnt no-flt "
+							style="z-index: 10; position: absolute; display: block; width: 400px; right: 0px; margin-top: -25px; clear: both;">
+							<table align="right" class=" ">
+								<tr>
+									<td>
+										<div class="social-widget">
+											<div class="sw">
+												<a rel="nofollow" href="javascript:;"
+													data-destination="email" data-itemid="191427248555"
+													data-spid="2047675" data-language="en_US"
+													class="scIcon sw_email" aria-label="Email to friends"
+													title="Email to friends" etafsharetitle=" MENS PUMA SHOES "
+													TEMPO"  SIZE 13 NEVER
+													WORN  "
+							etafshareurl="http://www.ebay.com/itm/MENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN-/191427248555"
+													id="sc_email"></a> <a rel="nofollow"
+													href="http://www.ebay.com/soc/share?du=http%3A%2F%2Fwww.ebay.com%2Fitm%2FMENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN-%2F191427248555&rt=nc&t=+MENS+PUMA+SHOES+%22TEMPO%22++SIZE+13+NEVER+WORN++&spid=2047675&itm=191427248555&media=http%3A%2F%2Fgalleryplus.ebayimg.com%2Fws%2Fweb%2F191427248555_1_0_1%2F1000x1000.jpg&swd=2&shorten=0"
+													data-destination="facebook" data-tracking=""
+													class="scIcon sw_facebook"
+													aria-label="Share on Facebook - opens in a new window or tab"
+													title="Share on Facebook - opens in a new window or tab"
+													target="_blank"></a> <a rel="nofollow"
+													href="http://www.ebay.com/soc/share?du=http%3A%2F%2Fwww.ebay.com%2Fitm%2FMENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN-%2F191427248555&rt=nc&spid=2047675&itm=191427248555&media=http%3A%2F%2Fgalleryplus.ebayimg.com%2Fws%2Fweb%2F191427248555_1_0_1%2F1000x1000.jpg&swd=3&lang=en&t=Check+out++MENS+PUMA+SHOES+%22TEMPO%22++SIZE+13+NEVER+WORN++"
+													data-destination="twitter" data-tracking=""
+													class="scIcon sw_twitter"
+													aria-label="Share on Twitter - opens in a new window or tab"
+													title="Share on Twitter - opens in a new window or tab"
+													target="_blank"></a> <a rel="nofollow"
+													href="http://www.ebay.com/soc/share?du=http%3A%2F%2Fwww.ebay.com%2Fitm%2FMENS-PUMA-SHOES-TEMPO-SIZE-13-NEVER-WORN-%2F191427248555&rt=nc&spid=2047675&itm=191427248555&media=http%3A%2F%2Fgalleryplus.ebayimg.com%2Fws%2Fweb%2F191427248555_1_0_1%2F1000x1000.jpg&swd=11&t=+MENS+PUMA+SHOES+%22TEMPO%22++SIZE+13+NEVER+WORN++"
+													data-destination="pinterest" data-tracking=""
+													class="scIcon sw_pinterest"
+													aria-label="Share on Pinterest - opens in a new window or tab"
+													title="Share on Pinterest - opens in a new window or tab"
+													target="_blank"></a>
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class=" watchLnk ">
+											<span id="linkTopAct" class="watchlinkSpan" style="display:">
+												<span class="watchPipe"></span> <span> </span>
+											</span>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div style="clear: both;"></div>
+						<div class="si-cnt si-cnt-eu vi-grBr vi-padn0 c-std"
+							style="height: 100%;">
+
+							<div>
+								<div class="si-inner">
+									<div class="si-trs-img">
+										<span id="topratedplusimage" class="si-trs-lrg-plus"></span>
+									</div>
+
+									<div class="oly_upnl" id="overlayId">
+										<div>
+											<span class="topratedplustitle"> Top Rated Plus</span> <span
+												class="topratedpluscontent">
+												<ul type="square" class="topratedplusbullets">
+													<li class="topratedplusbullets1">Sellers with highest
+														buyer ratings</li>
+													<li class="topratedplusbullets1">Returns, money back</li>
+													<li class="topratedplusbullets1">Ships in a business
+														day with tracking</li>
+												</ul> <a class="topratedpluslearnmore"
+												href="http://pages.ebay.com/topratedplus/index.html"
+												target="_blank">Learn more</a>
+											</span>
+										</div>
+
+
+									</div>
+									
+									<div class="si-content ">
+										<h2 class="si-ttl si-trs-ttl">Seller information</h2>
+										<div class="bdg-78">
+											<div class="mbg vi-VR-margBtm3">
+												<a
+													href="/userDetails?userId=<%=product.addedBy%>"
+													aria-label="Member ID:&nbsp;okeeffe294"> <span
+													class="mbg-nw"><%=sellerName%></span></a> 
+											</div>
+											<br>
+											
+											<div id="si-fb">
+											<%=avgReview%>&nbsp Average Rating</div>
+										</div>
+										<div class="si-rlDot"></div>
+										
+										
+										<div class="si-pd-a" style="overflow: hidden;">
+											<a
+												href="http://www.ebay.com/sch/okeeffe294/m.html?item=191427248555&hash=item2c91f401ab&pt=US_Men_s_Shoes&rt=nc&_trksid=p2047675.l2562"
+												id="vi-see-all-lnk">See other items</a>
+											<div class="vi-soi-inline-cnt">
+												<div id="vi-soi-inline-div"
+													style="display: none; padding-top: 10px;">
+													<span style="float: left; color: #333;">More...</span> <span><a
+														href="#"
+														style="font-size: 12px; margin-right: 4px; float: right;"
+														id="vi-soilayer-alllnk">See all</a></span>
+													<div style="clear: both;"></div>
+													<div style="height: auto;">
+														<div id="vi-soilayer-inner-cntr"
+															style="margin: 5px 0px 10px 0px; height: 60px;"></div>
+														<div id="vi-soilayer-inner-cntr-none"
+															style="display: none;">okeeffe294 has no other
+															items for sale.</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+					<div id="LeftSummaryPanel"
+						class="lsp-c lsp-cRight  lsp-cL500  lsp-de">
+						<div class="is " style="overflow: hidden;">
+							<form
+								action="http://offer.ebay.com/ws/eBayISAPI.dll?MakeBid&fromPage=2047675&item=191427248555&pt=US_Men_s_Shoes&fb=2"
+								method="post" name="viactiondetails">
+								<div class="nonActPanel ">
+									<h2 class="g-hdn">Item Information</h2>
+									<div>
+										<div class="u-flL lable">Item condition:</div>
+										<div class="u-flL condText  " id="itemCondition"></div>
+									</div>
+
+									<div class="u-cb"></div>
+									<div class="u-cb spcr a1"></div>
+									<!-- volume pricing -->
+									<!-- volume pricing ends -->
+									
+									<div class="">
+										<div class="u-flL lable">Item Description:</div>
+										
+										<span aria-busy="true" aria-live="polite" role="timer" aria-relevant="all" aria-atomic="true" id="vi-time-wrapperSection">
+												
+												<span id="itemDescription"  aria-atomic="false"><%=product.description%> </span>
+												</span>
+									</div>
+									<div class="u-cb"></div>
+									
+									<div class="u-cb spcr a1"></div>
+									<div id="timeLeftDiv" class="">
+										<div class="u-flL lable">Time left: </div>
+										
+										<span aria-busy="true" aria-live="polite" role="timer" aria-relevant="all" aria-atomic="true" id="vi-time-wrapperSection">
+												
+												<span id="bidTimeLeft"  aria-atomic="false"> </span>
+												</span>
+									</div>
+									
+									<div class="u-cb spcr "></div>
+									<div class="u-cb spcr vi-compat-hide"></div>
+									<div class="u-cb" style="height: 2px"></div>
+								</div>
+								<div class="c-std vi-ds3cont-box-marpad">
+									<div class="actPanel  vi-noborder ">
+										<div class="u-cb spcr vi-bbox-spcr22 vi-compat-hide"></div>
+										<div id="bidPriceDiv" class="u-cb">
+											<div class="vi-bbox-dspn u-flL lable pdT4 ">Current
+												bid:</div>
+											<div class="u-flL w29 vi-price" itemprop="offers"
+												itemscope="itemscope" itemtype="http://schema.org/Offer">
+												<span class="notranslate" id="latestBidPrice"
+													itemprop="price"></span>
+												<div id="isum-shipCostDiv" class="sh-CostBB">
+													</span> shipping
+												</div>
+												<span itemprop="availability"
+													content="http://schema.org/InStock"></span> <span
+													itemprop="priceCurrency" content="USD"></span>
+												<!--Added for VAT message - DE site. Show VAT included msg just below the price. Converted price message should come after this message.-->
+												<!-- Vat Excluded message -->
+											</div>
+											<span class="u-dspblk">
+												<div class="u-flL pdT4 pdR8">
+													<span> [&nbsp;<a
+														href="/bidHistory?auctionId=<%=auctionId%>"
+														rel="nofollow" id="vi-VR-bid-lnk" class="vi-bidC"><span
+															id="totalPlacedBids"></span><span> bid</span></a> ]
+													</span>
+												</div>
+											</span>
+										</div>
+										<div id="regPriceDiv" class="u-cb">
+											<div class="vi-bbox-dspn u-flL lable pdT4 ">Price
+												:</div>
+											<div class="u-flL w29 vi-price" itemprop="offers"
+												itemscope="itemscope" itemtype="http://schema.org/Offer">
+												<span class="notranslate" id="productPrice"
+													itemprop="price"></span>
+												<div id="isum-shipCostDiv" class="sh-CostBB">
+													</span> shipping
+												</div>
+												<span itemprop="availability"
+													content="http://schema.org/InStock"></span> <span
+													itemprop="priceCurrency" content="USD"></span>
+												<!--Added for VAT message - DE site. Show VAT included msg just below the price. Converted price message should come after this message.-->
+												<!-- Vat Excluded message -->
+											</div>
+											
+										</div>
+
+										<div class="vi-bbox-dspn u-cb spcr"></div>
+
+										<div class="u-cb">
+											<div class="vi-bbox-dspn u-flL lable pdT3">&nbsp;</div>
+											<div class="u-flL u-b w29 " id="bidInputDiv">
+												<label id="maxbidlabel" for="MaxBidId" class="u-dspn">Your
+													max bid:</label> <input id="MaxBidId" placeholder=""
+													aria-labelledby="maxbidlabel"
+													class="notranslate MaxBidClass" type="text"
+													autocomplete="off" size="11" maxLength="10" name="maxbid"
+													value="">
+											</div>
+											<div class=""></div>
+											<!-- TODO: remove hardcoded Id's -->
+											<div id="biddingButton" class="u-flL ">
+												<!-- inserting code for another button -->
+												<!-- code ends  -->
+												<a role="button" _sp='p2047675.l4023' id="bidBtn_btn"
+													style="" class="btn btn-prim  vi-VR-btnWdth-XL"
+												
+													vib="vib" rel="nofollow"> Place bid</a>
+											</div>
+											<div id="addCartButton" class="u-flL ">
+												<!-- inserting code for another button -->
+												<!-- code ends  -->
+												<a role="button" _sp='p2047675.l4023' id="addtocart"
+													style="" class="btn btn-prim  vi-VR-btnWdth-XL"
+												
+													vib="vib" rel="nofollow"> Add to Cart</a>
+											</div>
+											<!-- ShowStatusOnLoad -->
+										</div>
+										<div id="minimumBidDiv" class="u-cb vi-bbox-dspn">
+											<div class="u-flL lable">&nbsp</div>
+											<div id="nextMinimumBid" class="notranslate u-flL bid-note"></div><br>
+												<div class="u-flL lable">&nbsp</div>
+												<div class="w2b-cnt w2b-1 w2b-red">
+												<span id="bidAlert" class="w2b-sgl"></span>
+									    </div>
+										</div>
+										<!-- //TODO : remove hardcoded ID for Shipping cost -->
+										<div class="u-cb spcr vi-bbox-spcr10"></div>
+									</div>
+
+									<div class="watchListCmp  vi-noborder ">
+										<div class="vi-bbox-dspn u-flL lable">&nbsp;</div>
+										<div class="vi-bbox-dspn u-flL w29">&nbsp;</div>
+										
+
+
+										<div class="vi-bbox-dspn u-cb spcr"></div>
+									</div>
+									<div id="why2buy">
+										<div class="w2b w2bsls">
+											<div class="w2b-cnt w2b-1 w2b-red">
+												<span class="w2b-sgl"><%=avgReview%>&nbsp Average Rating</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="vi-lkhdr-v4-plchdr"></div>
+								<div id="vi-spw-atf"></div>
+
+								<div id="shippingSummary">
+									<div class="u-cb spcr"></div>
+									<div id="sh-gspLogoWrapper" style="display: none;">
+										<div class="u-cb spcr"></div>
+										<!-- 		<div class="sh-gspShadow">
+			<div class="sh-gspLeftShadow"></div>
+			<div class="sh-gspRightShadow"></div>
+		</div> -->
+										<div class="u-flL lable">
+											<div class="sh-gspLogo"></div>
+										</div>
+										<div class="u-flL sh-col">
+											<div class="sh-gspFirstLine">No additional import
+												charges at delivery!</div>
+											<div class="sh-gspSecondLine">
+												This item will be shipped through the Global Shipping
+												Program and includes international tracking. <a
+													href="http://pages.ebay.com/buy/globalshippingprogram/"
+													target="_blank">Learn more<b class="hideforacc">-
+														opens in a new window or tab</b></a>
+											</div>
+											<div class="sh-gspDashedBorder"></div>
+										</div>
+									</div>
+
+
+									<div>
+										<div class="u-flL lable" id="shippingPlaceHolderId">Shipping:</div>
+										<div class="u-flL sh-col">
+											<span id="shSummary"> <!-- TODO:check whether to display none or not -->
+												<span id="fshippingCost" class="notranslate sh-cst ">
+													<span>$125.00</span>
+											</span> <span id="fShippingSvc"> Economy Int'l Shipping<!-- GSP -->
+											</span> <span> 
+											</span>
+												<div class="iti-eu-txt iti-spacing">
+													<!-- <div class="iti-left-indent u-flL">&nbsp;</div> -->
+													<div class="iti-eu-label vi-u-flL">
+														See details about international shipping here.
+														<div class="oly_upnl" id="w1-21-overlay">
+															<div class="vi-shp-cbtolay-ptbr" aria-live="assertive"
+																role="alert">
+																<div>
+																	<b>Items shipping internationally</b> may be subject to
+																	customs processing depending on the item's declared
+																	value.
+																</div>
+																<div class="vi-shp-vert-spc"></div>
+																<div>
+																	<b>Sellers</b> set the item's declared value and must
+																	comply with customs declaration laws.
+																</div>
+																<div class="vi-shp-vert-spc"></div>
+																<div>
+																	<b>Buyers</b> may be subject to additional charges for
+																	customs clearance.
+																</div>
+																<div class="vi-shp-vert-spc"></div>
+																<div>
+																	Visit eBay's page on <a
+																		href="http://pages.ebay.com/globaltrade/index.html"
+																		target="_blank">international trade</a>.
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="clear"></div>
+												</div> <script type="text/javascript">
+		function getElementsByClassName(e,t){var n=[];var r=new RegExp("(^| )"+t+"( |$)");var i=e.getElementsByTagName("*");for(var s=0,o=i.length;s<o;s++)if(r.test(i[s].className))n.push(i[s]);return n}			
+	</script> <script type="text/javascript">
+				var shElemntArry = getElementsByClassName(document.body,'sh-CostBB'); for(var i = shElemntArry.length - 1; i >= 0; --i){shElemntArry[i].style.display = 'none';shElemntArry[i].innerHTML = "+$125.00 shipping";}
+				var shElemntArry = getElementsByClassName(document.body,'sh-CostBB-lkdhdr'); for(var i = shElemntArry.length - 1; i >= 0; --i){shElemntArry[i].style.display = 'inline';shElemntArry[i].innerHTML = "+$125.00 shipping";}
+			</script> <script type="text/javascript">
+					var convP = document.getElementById('convbinPrice'); if(convP){var x = convP.getElementsByTagName("SPAN")[0]; if(x){x.style.display = 'none';};};
+				</script>
+												<div id="sh-not-mayBe" style="display: none"></div>
+											</span>
+											<!-- Build Estimated delivery and CBT message -->
+										</div>
+										<div class="clear"></div>
+									</div>
+
+
+								</div>
+								<div id="itemLocation">
+									<div class="lable u-flL vi-acc-hide">&nbsp;</div>
+									<div class="u-flL iti-w75 ">
+										<div class="iti-eu-txt iti-spacing">
+											<div class="iti-eu-label vi-u-flL" id="" style="">Item
+												location:</div>
+											<div class="iti-eu-bld-gry ">Plainfield, Illinois,
+												United States</div>
+											<div class="clear"></div>
+										</div>
+									</div>
+									<div class="u-cb"></div>
+								</div>
+								<div class="u-cb"></div>
+								<div id="shipsTo">
+									<div class="lable u-flL vi-acc-hide">&nbsp;</div>
+									<div class="u-flL iti-w75">
+										<div id="shipsToSummary">
+											<div class="iti-eu-txt iti-spacing">
+												<div id="vi-acc-shpsToLbl" class="iti-eu-label vi-u-flL">Ships
+													to:</div>
+												<div id="vi-acc-shpsToLbl-cnt"
+													class="iti-eu-bld-gry vi-shp-pdg-rt">Worldwide</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="deliverySummary">
+									<div class="u-cb spcr"></div>
+									<div id="impchSummary" style="display: none;">
+										<div class="u-flL lable">Import charges:</div>
+										<div class="u-flL sh-col">
+											<div>
+												<span id="impch_show" style="display: none;"> <span
+													id="impchCost" class="sh-impchCost"></span> (estimated and
+													based on current bid)
+												</span> <span id="impch_xo" style="">To be provided at
+													checkout </span> <span class="sh-bubble"> <a id="imprthlp"
+													class="sh-qmark" href="javascript:;">&nbsp;<b
+														class="g-hdn">help icon for Shipping - opens a layer</b></a>
+												</span>
+												<div class="oly_upnl" id="imprtoly">
+													<div class="vi-shp-shpolay" aria-live="assertive"
+														role="alert">
+														<span id="vi-sh-imp-nonEU" style="">This amount
+															includes applicable customs duties, taxes, brokerage and
+															other fees. This amount is subject to change until you
+															make payment. For additional information, see the Global
+															Shipping Program <a
+															href="http://pages.ebay.com/shipping/globalshipping/buyer-tnc.html#programfees"
+															target="_blank">terms and conditions<b
+																class="hideforacc">- opens in a new window or tab</b></a>
+														</span> <span id="vi-sh-imp-EU" style="display: none">This
+															amount includes applicable customs duties, taxes,
+															brokerage and other fees. This amount is subject to
+															change until you make payment. If you reside in an EU
+															member state besides UK, import VAT on this purchase is
+															not recoverable. For additional information, see the
+															Global Shipping Program <a
+															href="http://pages.ebay.com/shipping/globalshipping/buyer-tnc.html#programfees"
+															target="_blank">terms and conditions<b
+																class="hideforacc">- opens in a new window or tab</b></a>
+														</span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="u-cb spcr"></div>
+									</div>
+									<div class="u-flL lable">Delivery:</div>
+									<div class="u-flL sh-col">
+										<span id="delSummary"> <!-- Fi rst shipping service's cost -->
+											<!-- PC 5555 cases -->
+											<div role="alert" class="sh-del-frst ">
+												<div class="sh-inline-div">Varies for items shipped
+													from an international location</div>
+												<span class=""> 
+												</span>
+												<div class="oly_upnl" id="w1-23-overlay">
+													<div class="vi-shp-shpolay" aria-live="assertive"
+														role="alert">
+														<a
+															href="http://pages.ebay.com/help/buy/contextual/estimated-delivery.html"
+															target="_blank">Estimated delivery dates <b
+															class="hideforacc"> - opens in a new window or tab</b></a>
+														include seller's handling time, origin ZIP Code,
+														destination ZIP Code and time of acceptance and will
+														depend on shipping service selected and receipt of <a
+															href="http://pages.ebay.com/help/buy/contextual/domestic-handling-time.html"
+															target="_blank">cleared payment<b class="hideforacc">
+																- opens in a new window or tab</b></a>. Delivery times may vary,
+														especially during peak periods.
+													</div>
+												</div>
+											</div>
+										</span>
+									</div>
+								</div>
+								<div class="u-cb spcr"></div>
+								<div class="u-flL lable" id="paymentsPlaceHolderId" style="">
+									Payments:</div>
+								<div class="u-flL rpColWid">
+									<div id="payDet1" class="">
+										<img class="pd-img" style="margin-right: 10px;"
+											src="http://ir.ebaystatic.com/pictures/aw/pics/logos/logoPayPal_51x14.png"
+											alt="PayPal" border="0" /> <span style="position: relative;">
+											<img
+											src="http://ir.ebaystatic.com/pictures/aw/pics/logos/CC_icons.png"
+											alt="Visa/MasterCard, Amex, Discover"
+											title="Visa/MasterCard, Amex, Discover"
+											class="pd-pp-cc-container" />
+											<div class="vi-ppc-coffer-txt">Credit Cards processed
+												by PayPal</div>
+										</span> <span><a rel="nofollow"></a> </span>
+									</div>
+									<div class="pd-showGspLegal">
+										International shipping and import charges paid to Pitney Bowes
+										Inc. <a class="vi-ds3-ter-a" style="white-space: nowrap;"
+											href="http://pages.ebay.com/shipping/globalshipping/buyer-tnc.html#paymentsplit "
+											target="_blank">Learn More<b class="hideforacc">-
+												opens in a new window or tab</b></a>
+									</div>
+									<div id="rtm_html_699"></div>
+								</div>
+								<div class="u-cb spcr"></div>
+								<div id="ret-accept">
+									<div id="returnsPlacementHolderId" class="u-flL lable">Returns:</div>
+									<div class="u-flL rpColWid">
+										<table width="100%">
+											<tr>
+												<td class="rpWrapCol"><span style=""> <span
+														id="vi-ret-accrd-txt">14 days&nbsp;money
+															back,&nbsp;buyer pays return shipping</span> |&nbsp; <a
+														rel="nofollow"></a>
+												</span></td>
+											</tr>
+										</table>
+									</div>
+
+								</div>
+
+								<div class="u-cb spcr"></div>
+								<div>
+									<div id="coveragePlacementHolderId"
+										class="u-flL lable vi-ebp2-lbl">Guarantee:</div>
+									<div class="u-flL  rpColWid ">
+										<table class="vi-ebp2-logo-tbl" width="100%">
+											<tr>
+												<td class="vi-ebp2-logo-tbl-cell" colspan="2"><span
+													id="vi-ebp2-logo" class="vi-ebp2-logo"><span
+														class="hideforacc">Money Back Guarantee</span></span> </td>
+											</tr>
+											<tr>
+												<td colspan="2" style="font-size: 12px;">Get the item
+													you ordered or get your money back.</td>
+											</tr>
+											<tr>
+												<td colspan="2" style="font-size: 11px;">Covers your
+													purchase price and original shipping.</td>
+											</tr>
+										</table>
+
+
+
+									</div>
+								</div>
+							</form>
+
+						</div>
+
+
+						<!-- Error build tag(class com.ebay.webres.resource.tag.UseScriptTag) with value(null)! -->
+					</div>
+				</div>
+
+				<div style="clear: both"></div>
+			</div>
+		</div>
+		<div id="vi_zoomEnl_plc_hldr"></div>
+		<div id="promotionsCntr"></div>
+		<div id="BottomPanelDF">
+			<div id="BottomPanel" style="margin-bottom: 10px;">
+				<!-- <h2> Bottom panel for Description </h2> -->
+				<!-- Placement 100005 -->
+				<div style="height: 20px; width: 100%; clear: both;"></div>
+				<!-- TODO:remove this line -->
+				<link rel="stylesheet"
+					href="http://ir.ebaystatic.com/rs/v/qia2cmxjo21ohmywwoi2z2c2oil"
+					type="text/css" />
+				<div style="clear: both; padding-top: 10px"></div>
+				<div id="merch_html_100005">
+					<div class="nume-vr96 " data-pid="100005" id="nume_html_100005">
+						<div class="clear">
+							<div class="numeinfo">
+								<div class="popup-top">
+									<i class="close" title="Close" tabindex="0"></i>
+									<p>
+										These alternative suggestions have been selected for you by
+										eBay's recommendation engine.<br />
+										<br />Sellers: <a class="nm_trs" target="_blank"
+											title="opens in a new window or tab"
+											href="http://pages.ebay.com/help/sell/cp-overview.html?_trksid=p2047675.m2369.c100005">Learn
+											more</a> about how to get the most benefit from
+										cross-merchandising. <a class="nm_trs" target="_blank"
+											href="http://pages.ebay.com/help/sell/contextual/promoting.html"
+											title="opens in a new window or tab">More help</a>
+									</p>
+								</div>
+								<div class="popup-btm"></div>
+							</div>
+							</div>
+					</div>
+				</div>
+				<div style="clear: both; padding-top: 10px"></div>
+				<div id="merch_html_100008"></div>
+				
+				<div class="oly_upnl" id="powerBid">
+					<!-- CurrentBidPrice -->
+					<!-- TODO:check a way to organise ID's -->
+					<!-- YourMaxBidPrice for Confirmation -->
+					<!-- YourMaxBidPrice/IncreaseBidPrice InputBox -->
+					<!-- PowerBid -->
+
+					<!-- Variant 5 -->
+					<!-- SMS Variant 1 -->
+					<div class='bid pb pow V2' style='width: 520px'>
+						<div class="dummy" style="display: none;"></div>
+
+						<!-- Layer Wrapper Begins  -->
+						<div id="w1-31-_layerWrap" class=" layerWrap sur">
+
+							<!-- Start of Header Section -->
+
+							<div class="topWrap">
+								<div id="w1-31-_topPanel" class="topPanel ttl">
+									<table width="100%;"
+										summary="Contains details about timeleft,current bid amount,shipping amount and number of bids.">
+										<tr class="valTr">
+											<td headers="w1-31-_timeLeft_head" class="tlTd">
+												<div class="timeLeftVal fwb">
+													<span class="g-hdn">time left</span><span
+														id="w1-31-_timeLeft_val"></span>
+												</div>
+											</td>
+											<td headers="w1-31-_cur_head" class="cbTd">
+												<div class="curBidVal fwb ">
+													<span class="g-hdn">Current bid amount </span><span
+														id="w1-31-_cur_val"></span>
+												</div>
+											</td>
+											<td headers="w1-31-_plus_head" class="plusTd">
+												<div class="plus">+</div>
+											</td>
+											<td headers="w1-31-_shp_head" class="sTd">
+												<div class="shipVal fwb">
+													<span class="g-hdn">Shipping amount </span><span
+														id="w1-31-_shp_val"></span>
+												</div>
+											</td>
+											<td headers="w1-31-_bidCount_head" class="bcTd">
+												<div class="bidCntVal fwb">
+													<span id="w1-31-_bidCount_acc" class="g-hdn">Bid
+														Count </span><span id="w1-31-_bidCount_val"></span>
+												</div>
+											</td>
+										</tr>
+										<tr class="txtTr">
+											<td id="w1-31-_timeLeft_head" class="tlTd"><div
+													class="belowTxt">time left</div></td>
+											<td id="w1-31-_cur_head" class="cbTd"><div
+													class="belowTxt">current bid</div></td>
+													
+											<td id="w1-31-_plus_head"><span class="g-hdn">+</span></td>
+											<td id="w1-31-_shp_head" class="sTd"><div
+													class="belowTxt">shipping</div></td>
+											<td id="w1-31-_bidCount_head" class="bcTd"><div
+													class="belowTxt" id='w1-31-_belowBTxt'>bids</div></td>
+										</tr>
+										<tr class="approxTr">
+											<td><div class="approx"
+													style="text-align: left; color: #555555;">Approximately:</div></td>
+											<td><div class="approx">
+													<span class="g-hdn">Current bid amount
+														Approximately:</span><span id="w1-31-_cur_approx"></span>
+												</div></td>
+											<td><span class="g-hdn">+</span></td>
+											<td class="sTd"><div class="approx">
+													<span id="w1-31-_shp_acc_approx" class="g-hdn">Shipping
+														amount Approximately:</span><span id="w1-31-_shp_approx"></span>
+												</div></td>
+											<td></td>
+										</tr>
+										<tr id="w1-31-_impCh_topPIC_wrp" class="topPIC ttl">
+											<td style="padding-top: 17px;" class="fs14">Import
+												charges:</td>
+											<td style="padding-top: 17px; text-align: left;" colspan="4">
+												<div>
+													<span class="fs16" id="w1-31-_impCh_topPIC_val"></span> <span
+														id="w1-31-_impChBid_topPIC_val"
+														style="font-size: x-small; display: none;">(estimated
+														and based on current bid)</span> <span
+														id="w1-31-_impChBid_topPIC_valErr" class="fs13"
+														style="display: none;">To be provided at checkout</span>
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<!-- Header section ends here for BidLayer Ver 2.0-->
+
+							<!-- End of Header Section -->
+
+							<!-- Start of Status Message -->
+
+							<!-- Status message section starts again here for Bid Layer Ver 1.0 -->
+							<div role="alert">
+								<div id="w1-31-_statusMsg_wrp" class="sMsgWrap">
+									<div>
+										<!-- Replacement for Statusmessage component:- Site speed optimization -->
+										<div class="sm-co sm-er">
+											<i class="gspr icmsu"></i>
+											<p class="sm-md mi-su" aria-live="assertive"
+												aria-atomic="true" aria-relevant="all" role="alert"></p>
+											<div style="clear: both;"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Status message section ends here for Bid Layer Ver 1.0 -->
+
+							<!-- End of Status Message -->
+
+							<!-- Start of Review Section -->
+							<div id="w1-31-_reviewBidSec_wrp" class="reviewSection">
+								<div>
+									<div id="w1-31-_impCh_wrp" class="icWrap"
+										style="padding: 0 0 10px 20px;">
+										<div class="fl icTitle">Import charges:</div>
+										<div class="flL" style="padding: 2px 0px 0px 5px;">
+											<span id="w1-31-_impCh_val" class="fontB notranslate"></span>
+											<span class="icTxt" id="w1-31-_impChBid_val">(estimated
+												and based on max bid)</span> <span id="w1-31-_impChBid_valErr"
+												style="display: none;">To be provided at checkout</span>
+										</div>
+										<div class="cb"></div>
+									</div>
+									<div style="text-align: center;">
+										<div style="float: right; padding-left: 10px;" class="fs18">
+											<a role="button" id="w1-31-_reviewBidSec_btn" style=""
+												class="btn btn-prim  " href="javascript:;" vib="vib"
+												rel="nofollow"> Confirm</a>
+										</div>
+										<div class="fl reviewTitle" style="width: 140px;">Your
+											bid amount</div>
+										<div class="fl reviewAmtWrap">
+											<div id="w1-31-_reviewBidSec_val" class="bold"
+												style="font-size: 22px;"></div>
+											<input type="hidden" id="w1-31-_reviewBidSec_val_hdn"
+												value="" />
+											<div class="approx">
+												Approximately:<span style="padding-left: 5px;"
+													id="w1-31-_reviewBidSec_approx"></span>
+											</div>
+										</div>
+										<div class="cb"></div>
+									</div>
+								</div>
+							</div>
+
+							<!-- End of Review Section -->
+
+							<!-- Start of Bid Section -->
+
+							<div style="padding: 0 20px 20px 20px;" id="w1-31-_bidSec_wrp">
+								<table height="100%" width="100%">
+									<tr height="34%" class="placeBidSectionTr">
+										<td id="w1-31-_placeBidSec">
+											<div>
+												<a role="button" id="w1-31-_placeBidSec_btn" style=""
+													class="btn btn-prim  " href="javascript:;" vib="vib"
+													rel="nofollow"> </a> <input type="hidden"
+													id="w1-31-_placeBidSec_val" value="" />
+												<div style="padding-top: 10px" class="approx">
+													Approximately:<span id="w1-31-_placeBidSec_approx"></span>
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr height="1%">
+										<td>
+											<div id="w1-31-_seperator" class="seperator">
+												<div class="fwb circle">
+													<p>OR</p>
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr height="65%" class="ebayBidSectionTr"
+										id="w1-31-_ebayBidSec">
+										<td>
+											<div id="w1-31-_ebayBidSec_cnt" class="ebayBidSectionCnt">
+												<div class="currMax" style="padding-bottom: 3px;"
+													id="w1-31-_ebayBidSec_currMax">
+													<div style="vertical-align: top;" class="ib">
+														<span class="fs16">Your current max bid:</span>
+													</div>
+													<div class="ib">
+														<div class="fs18 bold" style="padding-left: 5px;"
+															id="w1-31-_ebayBidSec_currMax_val"></div>
+														<div class="approx"
+															style="padding-top: 5px; font-weight: 500;">
+															(Approximately:<span
+																id="w1-31-_ebayBidSec_currMax_val_approx"></span><span>)</span>
+														</div>
+													</div>
+												</div>
+												<div id="w1-31-_ebayBidSec_txt1"
+													style="padding: 5px 0 20px 0;">
+													<span class="fs15">Increase your chances of winning
+														by setting a higher bid now.</span>
+												</div>
+												<div id="w1-31-_ebayBidSec_txt2"
+													style="padding-bottom: 5px;">
+													<span class="ttl">Let eBay place automatic bids for
+														you</span> <span class="sh-bubble" style="position: relative;">
+														<a id="powHlp" class="sh-qmark fs16" href="javascript:;"
+														role="button" title="Help icon.">&nbsp;<span
+															class="g-hdn">This opens an help overlay dialog
+																about automatic bidding.</span></a>
+														<div id="vi_oly_powHelpRightOly" class="hlpOly"
+															role="alertdialog"
+															aria-label="Help overlay dialog is opened." tabindex="-1">
+
+															<div class="pointer"></div>
+															<div class="hlpCnt" tabindex="-1">
+																<div class="howTxt">How does automatic bidding
+																	work?</div>
+																<div class="smartBidIns">
+																	As other bids come in, eBay will automatically raise
+																	your bid in small amounts, up to your limit. <span
+																		style="padding-left: 5px;"><a
+																		href="http://pages.ebay.com/help/buy/automatic-bidding.html"
+																		target="_blank">Learn More.<b class="g-hdn"> -
+																				opens in a new window or tab</b></a></span>
+																</div>
+															</div>
+															<div class="closeBut" role="button" tabindex="0">
+																<span class="g-hdn">Close button. This closes the
+																	help overlay dialog.</span>
+															</div>
+														</div>
+													</span> <span class="ttl upto">, up to</span>
+												</div>
+												<div>
+													<span class="inpWrap"> <label class="symb fwb"
+														for="w1-31-_ebayBidSec_val" id="w1-31-_ebayBidSec_symb"></label>
+														<input type="text" id="w1-31-_ebayBidSec_val"
+														maxlength="10" title="Enter your automatic bid"
+														class="inpVal" />
+													</span>
+													<div class="minToBidWrap">
+														<span class="minimumToBid"></span>
+													</div>
+												</div>
+												<div style="padding-top: 10px;">
+													<a role="button" id="w1-31-_ebayBidSec_btn" style=""
+														class="btn btn-prim  " href="javascript:;" vib="vib"
+														rel="nofollow"> Set automatic bid</a>
+												</div>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<!-- Bid section ends here for Ver 2.0 -->
+							<!-- End of Bid Section -->
+
+							<!-- Start of Footer Section -->
+							<!-- Bid section starts here for Ver 1.0 -->
+							<div class="clear"></div>
+
+							<div id="w1-31-_disc" class="disc">
+
+								<!-- Added for MOC legal disclosure -->
+								
+								<div class="inFeed">
+									<div id="w1-31-_inlineFeedback">
+										<span id="w1-31-_inlineFeedback_result" tabindex="0"
+											style="display: none;"><span class="g-hdn">Your
+												feedback is submitted. </span>Thank you for helping us improve!</span> <a
+											id="powerBidSurvey" href="javascript:;">Tell us what you
+											think<span class="dArrow">&nbsp;</span>
+										</a>
+
+										<div class="oly_upnl" id="powerBidSurveyOly">
+											<div class="vi-shp-shpolay">
+
+												<iframe scrolling="no" frameborder="0"
+													id="w1-31-_inlineFeedback_frm" style="display: none;"></iframe>
+												<div>
+													<fieldset>
+														<legend>
+															<div style="width: 300px;">We've made a few changes
+																to bidding.</div>
+															<div id="w1-31-_inlineFeedback_ques">Were these
+																helpful?</div>
+														</legend>
+														<span> <input autofocus="true" type="radio"
+															id="w1-31-_inlineFeedback_yes" class="rate-radio"
+															value="5" checked name="w1-31-_inlineFeedback_radio">
+															<label for="w1-31-_inlineFeedback_yes">Yes</label>
+														</span> <span> <input type="radio"
+															id="w1-31-_inlineFeedback_no" value="1"
+															class="rate-radio" name="w1-31-_inlineFeedback_radio">
+															<label class="nolabel" for="w1-31-_inlineFeedback_no">No</label>
+														</span>
+													</fieldset>
+
+												</div>
+												<div style="padding: 5px 0px;">
+
+													<textarea class="fbInp" aria-label="Input comments here."
+														id="w1-31-_inlineFeedback_comments">Input comments here.</textarea>
+												</div>
+												<div style="text-align: right;">
+													<a href="javascript:;" id="w1-31-_inlineFeedback_cancel">Cancel</a>
+													<a role="button" id="w1-31-_inlineFeedback_submit" style=""
+														class="btn btn-prim btn-m " href="javascript:;" vib="vib"
+														rel="nofollow"> Submit</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="cb"></div>
+							</div>
+
+							<!-- Bid section ends here for Ver 2.0 -->
+						</div>
+						<!-- Layer wrapper ends -->
+
+						<!-- Loading Throbber -->
+						<div id="w1-31-_loading" class="wrapper"
+							style="padding-top: 20px;">
+							<div class="throbber">
+								<div class="loading">Loading...</div>
+							</div>
+						</div>
+
+						<!-- Resume Bidding Note -->
+						<div id="w1-31-_resume" class="wrapper resume"
+							style="padding: 20px;">
+							<div id="w1-31-_resume_ttl" class="g-hdn" tabindex="-1">Bid
+								layer is updating the contents.</div>
+							<a
+								href="http://offer.ebay.com/ws/eBayISAPI.dll?MakeBid&amp;fromPage=2047675&amp;item=191427248555&amp;pt=US_Men_s_Shoes&amp;fb=2">Resume
+								bidding</a>, if the page does not update immediately.
+						</div>
+
+						<div class="clear"></div>
+
+						<div class="dspn">
+
+							<!-- Status messages -->
+							<div id="w1-31-_d">d</div>
+							<div id="w1-31-_h">h</div>
+							<div id="w1-31-_m">m</div>
+							<div id="w1-31-_s">s</div>
+							<div id="w1-31-_day">day</div>
+							<div id="w1-31-_hour">hour</div>
+							<div id="w1-31-_hours">hours</div>
+							<div id="w1-31-_freeShipping">
+								<b>FREE shipping</b>
+							</div>
+							<div id="w1-31-_shippingDefault">See item description</div>
+							<div id="w1-31-_shippingDefaultNew">+ See item description
+								for shipping</div>
+							<div id="w1-31-_impChargeDefault">
+								<a id="w1-31-_impChLnk" href="Javascript:;">Calculate</a>
+							</div>
+							<div id="w1-31-_approximately">Approximately:</div>
+							<div id="w1-31-_minToBid">(Enter ##1## or more)</div>
+							<div id="w1-31-_minToBidHighBidder">(Enter more than ##1##)</div>
+							<div id="w1-31-_yourMaximumBid">Your max bid:</div>
+
+							<div id="w1-31-_outBid">You've been outbid. Don't let it
+								get away - place another bid.</div>
+							<div id="w1-31-_outbidBySmartBid">You've been outbid by an
+								automatic bid placed earlier by another bidder.</div>
+							<div id="w1-31-_highBid">You're the highest bidder on this
+								item!</div>
+							<div id="w1-31-_highBidFrst">You're the first bidder on
+								this item!</div>
+							<div id="w1-31-_highBid1MaxBidAway">You're the highest
+								bidder on this item, but you're close to being outbid.</div>
+							<div id="w1-31-_highBid60MinsLeft">This auction is almost
+								over and you're currently the high bidder.</div>
+							<div id="w1-31-_highBidReserveNotMet">You're the high
+								bidder on this item, but the reserve price hasn't been met yet.</div>
+
+
+							<div id="w1-31-_mboutBid1">You've been outbid by someone
+								else.</div>
+							<div id="w1-31-_mboutBid2">You can still win! Try bidding
+								again.</div>
+							<div id="w1-31-_mboutbidBySmartBid1">You've been outbid by
+								someone else's max bid.</div>
+							<div id="w1-31-_mboutbidBySmartBid2">You can still win! Try
+								bidding again.</div>
+							<div id="w1-31-_mboutbidByMatchingBid1">Your bid wasn't
+								accepted because it's the same as someone else's bid.</div>
+							<div id="w1-31-_mboutbidByMatchingBid2">Try raising your
+								max bid.</div>
+							<div id="w1-31-_mbhighBid1">You're the highest bidder!</div>
+							<div id="w1-31-_mbhighBid2">To increase your chances of
+								winning, try raising your bid.</div>
+							<div id="w1-31-_mbhighBidFrst">You're the first bidder.
+								Good Luck!</div>
+							<div id="w1-31-_mbhighBidAgain_1">You're still the highest
+								bidder!</div>
+							<div id="w1-31-_mbhighBidAgain_2">You increased your max
+								bid to</div>
+
+							<div id="w1-31-_decsep">Please enter your bid again.</div>
+							<div id="w1-31-_invalidBid">Enter a valid amount for your
+								bid.</div>
+							<div id="w1-31-_lowBid">Enter a bid that is the minimum bid
+								amount or higher.</div>
+							<div id="w1-31-_mblowBid">You have to bid at least</div>
+							<div id="w1-31-_invalidHighBid">Sorry, you can't lower your
+								maximum bid once it's placed.</div>
+							<div id="w1-31-_noPaypal">
+								This seller requires the buyer to have a PayPal account to
+								purchase this item. <a
+									href="http://www.paypal.com/us/cgi-bin/webscr?cmd=_registration-run">Get
+									a PayPal account here </a>.
+							</div>
+							<div id="w1-31-_moreThanBin">Your bid is the same as or
+								more than the Buy It Now price.You can save time and money by
+								buying it now.</div>
+
+
+
+							<div id="w1-31-_plaBidTitle">Place bid</div>
+							<div id="w1-31-_revTitle">Review and confirm your bid</div>
+							<div id="w1-31-_confirmTitle">Bid confirmation</div>
+							<div id="w1-31-_increaseMaxBidTxt">Increase max bid</div>
+
+							<div id="w1-31-_minToBidHBDynTxt">Enter a custom max bid
+								more than ##2##</div>
+							<div id="w1-31-_minToBidOBDynTxt">Enter a custom max bid of
+								##2## or more</div>
+							<div id="w1-31-_aprroxTopIC">+ ##2## approximate import
+								charges</div>
+							<div id="w1-31-_approxAmtNew">##2## (approximately)</div>
+							<div id="w1-31-_errmin">Please enter a higher amount than
+								the current bid.</div>
+							<div id="w1-31-_shipAmtNew">+ ##2## for shipping</div>
+							<div id="w1-31-_freeShippingNew">+ FREE SHIPPING</div>
+
+							<div id="w1-31-_btnTxtNewNow">Bid ##3## now</div>
+							<div id="w1-31-_btnTxtNew">Bid ##3##</div>
+
+
+						</div>
+					</div>
+
+					<!-- Variant 5 -->
+					<!-- CurrentBidPrice -->
+					<!-- YourMaxBidPrice for Review -->
+
+					<!-- YourMaxBidPrice/IncreaseBidPrice InputBox -->
+					<!-- For Bid SMS variant 7 and 8 -->
+				</div>
+				<div class="oly_upnl" id="w1-38-_olp">
+					<!-- CurrentBidPrice -->
+					<!-- TODO:check a way to organise ID's -->
+					<!-- YourMaxBidPrice for Confirmation -->
+					<!-- YourMaxBidPrice/IncreaseBidPrice InputBox -->
+					<div class="bid ocb" style='width:;'>
+
+						<!-- Status Messaging : call as a separate JSP TAG -->
+						<div id="w1-40-_statusMsg_wrp" class="wrapper dspn">
+							<div class="vimsg" id="w1-41-_o_container">
+								<div id="w1-41-_o" class="sm-o smi-o smo-c" aria-relevant="all"
+									aria-atomic="true" aria-live="assertive">
+									<div id="w1-41-_m" class="sm-mc cbg">
+										<i></i>
+										<div class="sm-t">
+											<div id="w1-40-_statusMsg_val" class="status"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+						<!-- Time Left -->
+						<div id="w1-40-_timeLeft_wrp" class="wrapper">
+							<div class="lable">Time left:</div>
+
+							<div class="flL value">
+								<span id="w1-40-_timeLeft_val" class="redTime "></span>
+							</div>
+							<div class="">
+								<input id="w1-40-_updt_btn" type="button" value="Refresh">
+							</div>
+						</div>
+
+						<!-- Current Bid -->
+						<div id="currentBidSec" class="wrapper">
+							<div id="w1-40-_cur_lbl" class="lable pdT2">Curret bid:</div>
+							<div class="flL">
+								<span id="w1-40-_cur_val" class="current notranslate"></span>
+								<div id="w1-40-_cur_approx" class="u-dspn approx">(approximately
+									##1##)</div>
+							</div>
+							<div class="spcr"></div>
+						</div>
+						
+						<div id="regPriceSec" class="wrapper">
+							<div id="w1-40-_cur_lbl" class="lable pdT2">Price :</div>
+							<div class="flL">
+								<span id="w1-40-_cur_val" class="current notranslate"></span>
+								<div id="w1-40-_cur_approx" class="u-dspn approx">(approximately
+									##1##)</div>
+							</div>
+							<div class="spcr"></div>
+						</div>
+
+						<!-- YourMaxBidPrice -->
+						<div id="w1-40-_review_wrp" class="wrapper">
+							<div class="lable">Your maximum bid:</div>
+							<div class="flL">
+								<span id="w1-40-_review_val" class="fontB notranslate"></span>
+								<div id="w1-40-_review_approx" class="u-dspn approx">(approximately
+									##1##)</div>
+							</div>
+							<div class="spcr"></div>
+						</div>
+						<!-- IncreaseBidPrice InputBox -->
+						<div id="w1-40-_enter_wrp" class="wrapper">
+							<div id="w1-40-_enter_lbl" class="lable ">Increase your
+								maximum bid:</div>
+							<div class="flL value" id="">
+								<span> <span id="w1-40-_enterw1-40-_currency"
+									class="fontB notranslate"></span> <label
+									for="w1-40-_enter_val"></label> <input id="w1-40-_enter_val"
+									title="Increase max bid" autocomplete="off" type="text"
+									maxlength="10" size="6" autofocus></input>
+								</span>
+								<div id="w1-40-_enter_approx" class="notranslate dspn approx"></div>
+							</div>
+							<div>
+								<input id="w1-40-_ocb_btn"
+									style="margin-left: 6px; margin-top: 0px;" type="button"
+									class="btn btn-prim btn-s vi-VR-padRT20" value="1 Click Bid" />
+							</div>
+							<div class="spcr"></div>
+						</div>
+
+
+						<!-- Confirm Bidding Disclaimer -->
+						<div id="w1-40-_disc" class="wrapper disclaimer">
+							<div class="spcr height5"></div>
+							By clicking <b>1 Click Bid</b>, you commit to buy this item from
+							the seller if you're the winning bidder. <a id="w1-40-_lrn"
+								href="http://pages.ebay.com/help/buy/contextual/fastbidding.html">Learn
+								more<b class="g-hdn">about 1-click bid - opens in a new
+									window or tab</b>
+							</a>
+						</div>
+
+						<div id="w1-40-_cls_wrp" class="wrapper dspn flR">
+							<div class="clear"></div>
+						</div>
+
+
+						<div class="dspn">
+							<!-- Status messages -->
+							<div id="w1-40-_day">day</div>
+							<div id="w1-40-_hour">hour</div>
+							<div id="w1-40-_min">min</div>
+							<div id="w1-40-_sec">sec</div>
+							<div id="w1-40-_days">days</div>
+							<div id="w1-40-_hours">hours</div>
+							<div id="w1-40-_mins">mins</div>
+							<div id="w1-40-_secs">secs</div>
+							<div id="w1-40-_approximately">(approximately ##1##)</div>
+							<div id="w1-40-_win">Winning bid:</div>
+							<div id="w1-40-_start">Starting bid:</div>
+
+							<div id="w1-40-_close">Close</div>
+
+							<div id="w1-40-_aewin">Congrats! The auction has ended and
+								you're the winner.</div>
+							<div id="w1-40-_aenrwin">The auction has ended, but the
+								reserve price was not met.</div>
+							<div id="w1-40-_aeout">Sorry, the auction has ended and you
+								were outbid.</div>
+							<div id="w1-40-_high">Good news, you're the high bidder.</div>
+							<div id="w1-40-_out">Sorry, you've been outbid.</div>
+							<div id="w1-40-_highnr">You're the high bidder, but the
+								reserve price is not met.</div>
+							<div id="w1-40-_errmin">Please enter a higher amount than
+								the current bid.</div>
+							<div id="w1-40-_errhigh">Maximum bids cannot be lowered
+								once submitted.</div>
+							<div id="w1-40-_errmake">Please enter a valid number.</div>
+
+						</div>
+
+						<div class="clear"></div>
+					</div>
+
+					<!-- CurrentBidPrice -->
+					<!-- YourMaxBidPrice for Review -->
+					<!-- YourMaxBidPrice/IncreaseBidPrice InputBox -->
+				</div>
+			</div>
+			<!--[if IE]><style type="text/css">#BottomPanelDF {display: inline-block !important; width: 100%;}</style>
+					<![endif]-->
+			<div id="FootPanel">
+				<div class="FootPanelInnr">
+					<!-- Bottom Tool bar -->
+					
+					<div id="merch_html_100047"></div>
+					<div class="vi-btb-blinks">
+						<span> <span class="" style="white-space: nowrap;">
+								<a href="javascript:history.go(-1)"
+								title="Click to Go Back to search results"
+								id="smtBackToAnchorBTF"> <span>Back to search results</span>
+							</a>
+						</span>
+						</span> <a href="#" id="_rtop" class="vi-btb-Rt">Return to top</a>
+					</div>
+					
+					
+				</div>
+				<div id="glbfooter" class="gh-w gh-flex">
+					
+					<h2 class=gh-ar-hdn>Additional site navigation</h2>
+					<div id="gf-t-box">
+						<table class="gf-t">
+							<tr>
+								<td colspan=2><ul id="gf-l">
+										<li class="gf-li"><a href="http://community.ebay.com"
+											_exsp=m571.l3329 class="thrd gf-bar-a">Community</a></li>
+										<li class="gf-li"><a href="http://www.ebayinc.com"
+											_exsp=m571.l2602 class="thrd gf-bar-a">About eBay</a></li>
+										<li class="gf-li"><a href="http://announcements.ebay.com"
+											_sp=m571.l3330 class="thrd gf-bar-a">Announcements</a></li>
+										<li class="gf-li"><a
+											href="http://pages.ebay.com/securitycenter/index.html"
+											_sp=m571.l2616 class="thrd gf-bar-a">Security Center</a></li>
+										<li class="gf-li"><a
+											href="http://resolutioncenter.ebay.com/" _sp=m571.l1619
+											class="thrd gf-bar-a">Resolution Center</a></li>
+										<li class="gf-li"><a
+											href="http://pages.ebay.com/sellerinformation/index.html"
+											_sp=m571.l1613 class="thrd gf-bar-a">Seller
+												Information Center</a></li>
+										<li class="gf-li"><a
+											href="http://pages.ebay.com/help/policies/overview.html"
+											_sp=m571.l2604 class="thrd gf-bar-a">Policies</a></li>
+										<li class="gf-li"><a
+											href="http://pages.ebay.com/sitemap.html" _sp=m571.l1625
+											class="thrd gf-bar-a">Site Map</a></li>
+										<li class="gf-li"><a
+											href="http://viv.ebay.com/ws/eBayISAPI.dll?EbayTime"
+											_sp=m571.l2606 class="thrd gf-bar-a">eBay official
+												time</a></li>
+										<li class="gf-li"><a href="http://garden.ebay.com"
+											_sp=m571.l1617 class="thrd gf-bar-a">Preview new
+												features</a></li>
+										<li class="gf-li"><a
+											href="http://ocsnext.ebay.com/ocs/cuhome" _sp=m571.l2911
+											class="thrd gf-bar-a">Contact us</a></li>
+										<li class="gf-li"><a
+											href="http://qu.ebay.com/survey?srvName=globalheader+%28footer-US%29"
+											_sp=m571.l2628 class="thrd gh-survey gf-bar-a"
+											title="opens in a new window or tab">Tell us what you
+												think</a></li>
+									</ul></td>
+							</tr>
+							
+							<tr valign="top">
+								<td class="gf-legal">Copyright © 1995-2014 eBay Inc. All
+									Rights Reserved. <a
+									href="http://pages.ebay.com/help/policies/user-agreement.html?rt=nc">User
+										Agreement</a>, <a
+									href="http://pages.ebay.com/help/policies/privacy-policy.html?rt=nc">Privacy</a>
+									and <a
+									href="http://pages.ebay.com/help/account/cookies-web-beacons.html">Cookies</a>.
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<!--ts:2014.12.01.03:02-->
+				<!--rq:-->
+				<!--rvr:59rc5-->
+			</div>
+		</div>
+	</div>
+
+
+	<div id="JSDF">
+	<script type="text/javascript">	
+	
+	if(<%=product.isAuction%> == 1)
+	{
+	
+	var dateEnds = "<%=dateEnds%>"
+	var dateStarts = "<%=datePlaced%>"
+	
+	console.log(dateEnds);
+			  var clock = document.getElementById("bidTimeLeft")
+			  var d = new Date(dateEnds);													
+			  var targetDate = new Date(d.getFullYear(),d.getMonth(),d.getDate(),d.getHours(),d.getMinutes(),d.getSeconds() );  
+			  
+			  d = new Date(dateStarts);
+			  var stDate = new Date(d.getFullYear(),d.getMonth(),d.getDate(),d.getHours(),d.getMinutes(),d.getSeconds() ); 
+			  
+			  clock.innerHTML = countdown(targetDate).toString();
+			  setInterval(function(){
+				clock.innerHTML = countdown(targetDate).toString();
+			  }, 1000);
+			  }
+			</script>
+	
+	</div>
+	
+	<!-- RcmdId _vi_index-jsp,RlogId t6ulcpjqcj9%3Feog4d72f%2Bf6%607-14a058ca976-0x9a -->
+</body>
+</html>

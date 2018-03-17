@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!--eBay V3- msxml 6.0 XXXXXXXXXXXXXXXXXXXXXXXXXX-->
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8">
+
+    <title id="Description">Data Rows with Details in jqxDataTable</title>
+    <meta name="description" content="This sample demonstrates how we can display Rows with Details in the jQWidgets DataTable widget.">
+    <link rel="stylesheet" href="/jqwidgets/styles/jqx.base.css" type="text/css" />
+    <script type="text/javascript" src="/scripts/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+			
+			// $('panel').jqxPanel({ height: 500, width: 1000, autoUpdate: true, theme: 'classic' });
+              $('dataTable').text = " ";
+             $.ajax({
+                type: 'get',
+                contentType: 'application/json',
+                url: '/GetCart',
+                 success: function(data) {
+				
+                   if(data.length>0)
+				   {
+				   alert('has data');
+                   var source =
+                    {
+
+                        localData: data,
+                        dataType: "json"
+                    };
+
+                    // initialize the row details.
+                    var initRowDetails = function (id, row, element, rowinfo) {
+                        var tabsdiv = null;
+                        var information = null;
+                        var notes = null;
+                        // update the details height.
+                        rowinfo.detailsHeight = 200;
+                        element.append($("<div style='margin: 10px;'><ul style='margin-left: 30px;'><li class='title'>Title</li></ul><div class='information'></div></div>"));
+                        tabsdiv = $(element.children()[0]);
+                     
+                        if (tabsdiv != null) {
+                            information = tabsdiv.find('.information');
+                            var title = tabsdiv.find('.title');
+                            title.text("Details");
+
+                            var container = $('<div style="margin: 5px;"></div>')
+                            container.appendTo($(information));
+                            var photocolumn = $('<div style="float: left; width: 15%;"></div>');
+                            var leftcolumn = $('<div style="float: left; width: 45%;"></div>');
+                            var rightcolumn = $('<div style="float: left; width: 40%;"></div>');
+                            container.append(photocolumn);
+                            container.append(leftcolumn);
+                            container.append(rightcolumn);
+
+                            var photo = $("<div class='jqx-rc-all' style='margin: 10px;'><b>Photo:</b></div>");
+                            var image = $("<div style='margin-top: 10px;'></div>");
+                            var imgurl = row.image;
+                            var img = $('<img height="60" src="Images/'+imgurl+'"/>');
+                            image.append(img);
+                            image.appendTo(photo);
+                            photocolumn.append(photo);
+
+                            var productname = "<div style='margin: 10px;'><b>Product Name:</b> " + row.productname + "</div>";
+                            var productdescription = "<div style='margin: 10px;'><b>Product Description</b> " + row.productdescription + "</div>";
+                            var price= "<div style='margin: 10px;'><b>Price:</b> " + row.price + "</div>";
+                           
+                            $(leftcolumn).append(productname);
+                            $(leftcolumn).append(productdescription);
+                            $(leftcolumn).append(price);
+                           
+                            var removelink="RemoveFromCart?productId=";
+                            var remove = "<div style='margin: 10px;'><b>Remove :</b><a href="+removelink+row.productId+"> Remove</a></div>";
+                            var seller = "<div style='margin: 10px;'><b>Seller Name :</b> " + row.seller + "</div>";
+                            var quantity = "<div style='margin: 10px;'><b>Quantity:</b> " + row.quantity + "</div>";
+                            // var phone = "<div style='margin: 10px;'><b>Phone:</b> " + row.homephone + "</div>";
+                            // var hiredate = "<div style='margin: 10px;'><b>Hire Date:</b> " + row.hiredate + "</div>";
+
+                            $(rightcolumn).append(remove);
+                            $(rightcolumn).append(seller);
+                            $(rightcolumn).append(quantity);
+                            // $(rightcolumn).append(phone);
+                            // $(rightcolumn).append(hiredate);
+
+                            // var notescontainer = $('<div style="white-space: normal; margin: 5px;"><span>' + row.notes + '</span></div>');
+                            // $(notes).append(notescontainer);
+                            $(tabsdiv).jqxTabs({ width: 820, height:800});
+                        }
+                    }
+                    var dataAdapter = new $.jqx.dataAdapter(source);
+
+                    $("#dataTable").jqxDataTable(
+                    {
+                        width: 1000,
+						
+                        source: dataAdapter,
+                        pageable: false,
+						
+                        pageSize: 10,
+                        rowDetails: true,
+                        sortable: true,
+                        ready: function () {
+                            // expand the first details.
+                            $("#dataTable").jqxDataTable('showDetails', 0);
+                        },
+                        initRowDetails: initRowDetails,
+                        columns: [ 
+                              { text: 'User Name', dataField: 'firstname', width: 300 },
+                              { text: 'Product Title', dataField: 'productname', width: 300 },
+                              { text: 'Product Description', dataField: 'productdescription', width: 300 }
+                             
+                        ]
+                    });
+              }
+			  else
+			  {
+			  $('#header2').load("header2");
+			     alert('no data');
+					$('#nodata').show();
+			  }
+                }
+            });
+		
+    });
+    </script>
+	
+    <script type="text/javascript" src="/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdata.js"></script> 
+    <script type="text/javascript" src="/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxmenu.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdatatable.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxtabs.js"></script>
+    <script type="text/javascript" src="/scripts/demos.js"></script>
+</head>
+<body class='default'>
+
+<!--<iframe src="/header"></iframe>-->
+<div id="header2"></div>
+</br>
+<div id="nodata" style="display:none">
+<h4>  No items are added into cart.</h4>
+
+</div>
+<div>
+	  <div id="dataTable" style="margin-left:50px;height:1000px"></div>
+	 </div> 
+	 <div>
+	 <a href="/payment" id="makePayment" value="makePayment" style="margin-left: 500px;"><b>Make Payment</b></a>
+	 </div>
+	 
+</body>
+</html>
+
+

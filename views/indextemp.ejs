@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <title></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+<link rel="stylesheet" href="/styles/jqx.base.css" type="text/css" />
+   <script src="/scripts/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">
+    function toggle(button,id)
+    {
+      var url;
+      var dbid=id+1;
+      if(document.getElementById("uid"+id).value=="Disable"){
+       document.getElementById("uid"+id).value="Enable";
+       url="/updateUserStatus?userid="+dbid+"&status="+0;
+       }
+
+      else if(document.getElementById("uid"+id).value=="Enable"){
+       document.getElementById("uid"+id).value="Disable";
+       url="/updateUserStatus?userid="+dbid+"&status="+1;
+       }
+       $.ajax({
+         type: 'POST',
+
+
+                     url: url,
+                     success: function(data) {
+                         console.log('success user sttus update');
+                     console.log(data);
+                  //   userData=data;
+                 }
+                 });
+    }
+
+    function toggle2(button,id)
+    {
+      var url;
+      var dbid=id+1;
+      if(document.getElementById("pid"+id).value=="Disable"){
+       document.getElementById("pid"+id).value="Enable";
+       url="/updateProductStatus?productid="+dbid+"&status="+0;
+       }
+
+      else if(document.getElementById("pid"+id).value=="Enable"){
+       document.getElementById("pid"+id).value="Disable";
+      url="/updateProductStatus?productid="+dbid+"&status="+1;
+       }
+       $.ajax({
+         type: 'POST',
+
+
+                     url: url,
+                     success: function(data) {
+                         console.log('success user sttus update');
+                     console.log(data);
+                    // userData=data;
+                 }
+                 });
+    }
+
+
+            $(function(){
+               var userData,productData;
+
+               $("#jqxNotification").jqxNotification({ width: "auto", position: "top-right", opacity: 0.9,
+                closeOnClick: true, autoClose: false, showCloseButton: true, template: "mail", blink: true
+            });
+
+              $('#jqxTabs').jqxTabs({ height: '100%', width: '100%' });
+
+              $.ajax({
+                type: 'GET',
+
+                    contentType: 'application/json',
+                            url: '/getAllPersonData',
+                            success: function(data) {
+                                console.log('success');
+                            console.log(data);
+                            userData=data;
+                        }
+                        });
+
+                        $.ajax({
+                          type: 'GET',
+
+                              contentType: 'application/json',
+                                      url: '/getAllProductsData',
+                                      success: function(data) {
+                                          console.log('success all product data');
+                                      console.log(data);
+                                      productData=data;
+                                  }
+                                  });
+
+
+
+            // prepare the data
+            var source2 =
+            {
+                datatype: "json",
+                dataFields: [
+                     { name: 'userid', type: 'string' },
+                     { name: 'firstname', type: 'string' },
+                     { name: 'lastname', type: 'string' },
+                     { name: 'email', type: 'string' },
+                     { name: 'country', type: 'string' },
+                     { name: 'lastlogin', type: 'string' }
+
+                ],
+                url: '/getAllPersonData',
+              //  root: 'DATA',
+              //  record: 'ROW'
+            };
+
+            //prepare product data
+            var sourceProduct =
+            {
+                datatype: "json",
+                dataFields: [
+                     { name: 'productId', type: 'number' },
+                     { name: 'name', type: 'string' },
+                     { name: 'description', type: 'string' },
+                     { name: 'price', type: 'string' },
+                     { name: 'avgReview', type: 'string' },
+                     { name: 'isAuction', type: 'number' }
+
+                ],
+                url: '/getAllProductsData',
+              //  root: 'DATA',
+              //  record: 'ROW'
+            };
+
+            console.log('source 2');
+            console.log(source2);
+            var dataAdapter2 = new $.jqx.dataAdapter(source2, {
+                loadComplete: function () {
+                    // data is loaded.
+                }
+            });
+            var dataAdapterProducts = new $.jqx.dataAdapter(sourceProduct, {
+                loadComplete: function () {
+                    // data is loaded.
+                }
+            });
+            console.log("adapter");
+            console.log(dataAdapter2);
+          /*  var renderer = function (id) {
+                return '<div id="settings-panel"><div class="settings-setter"><div id="button'+id+'"></div></div></div><div class="events-container"></div></div>';
+                //return '<input type="button" onClick="buttonclick(event)" class="gridButton" id="btn' + id + '" value="Delete Row"/>'
+              }*/
+
+              var renderer2=function(id)
+              {
+                var status;
+              //  console.log(userData);
+                if(userData[id].isactive==1)
+                  status="Disable";
+                  else
+                    status="Enable";
+                return '<input type="button" id=uid'+id+' value='+status+' style="color:blue"  onclick="toggle(this,'+id+');">';
+              }
+            // create jqxDataTable.
+            $("#table").jqxDataTable(
+            {
+                source: dataAdapter2,
+                pageable: true,
+                pagerButtonsCount: 10,
+                altRows: true,
+                filterable: true,
+                height: 400,
+                filtermode: 'simple',
+                width:910,
+                columns: [
+                  { text: 'User Id', cellsAlign: 'center', align: 'center', dataField: 'userid', width: 50 },
+                  { text: 'First Name', columngroup: 'ProductDetails', cellsAlign: 'center', align: 'center', dataField: 'firstname', width:150  },
+                  { text: 'Last Name', columngroup: 'ProductDetails', dataField: 'lastname', cellsformat: 'd', cellsAlign: 'center', align: 'center', width:150 },
+                  { text: 'Email', columngroup: 'ProductDetails', dataField: 'email', cellsformat: 'c2', align: 'center', cellsAlign: 'center', width: 150 },
+                  { text: 'Country', columngroup: 'Location', cellsAlign: 'center', align: 'center', dataField: 'country', width: 150 },
+                  { text: 'Last Login', columngroup: 'Location', cellsAlign: 'center', align: 'center', dataField: 'lastlogin', width: 150 },
+                { text: 'Status',columngroup: 'ProductDetails',columntype: 'button', cellsAlign: 'center', align: 'center', dataField: 'isactive', width: 100,cellsrenderer: renderer2}
+                ]
+            });
+
+                var renderer2Product=function(id)
+                {
+                  var status;
+                  if(productData[id].isactive==1)
+                    status="Disable";
+                    else
+                      status="Enable";
+                  return '<input type="button" id=pid'+id+' value='+status+' style="color:blue"  onclick="toggle2(this,'+id+');">';
+                }
+              // create jqxDataTable.
+              $("#table2").jqxDataTable(
+              {
+                  source: dataAdapterProducts,
+                  pageable: true,
+                  pagerButtonsCount: 10,
+                  altRows: true,
+                  filterable: true,
+                  height: 400,
+                  filtermode: 'simple',
+                  width:910,
+                  columns: [
+                    { text: 'Product Id', cellsAlign: 'center', align: 'center', dataField: 'productId', width: 50 },
+                    { text: 'Name', columngroup: 'ProductDetails', cellsAlign: 'center', align: 'center', dataField: 'name', width:150  },
+                    { text: 'Description', columngroup: 'ProductDetails', dataField: 'description', cellsformat: 'd', cellsAlign: 'center', align: 'center', width:150 },
+                    { text: 'Price', columngroup: 'ProductDetails', dataField: 'price', cellsformat: 'c2', align: 'center', cellsAlign: 'center', width: 150 },
+                    { text: 'Average Review', columngroup: 'Location', cellsAlign: 'center', align: 'center', dataField: 'avgReview', width: 150 },
+                    { text: 'In Auction', columngroup: 'Location', cellsAlign: 'center', align: 'center', dataField: 'isAuction', width: 150 },
+                  { text: 'Status',columngroup: 'ProductDetails',columntype: 'button', cellsAlign: 'center', align: 'center', dataField: 'isactive', width: 100,cellsrenderer: renderer2Product}
+                  ]
+              });
+
+
+
+          //  $('#button1').jqxSwitchButton({ height: 27, width: 81,  checked: true });
+
+
+
+
+            // event handlers
+
+
+                $('#search').click(function(e){
+                    e.preventDefault();
+                    var value=$("#txtSearch").val();
+                    console.log('select_link clicked');
+                    console.log(value);
+
+          var data = {};
+          data.title = "title";
+          data.message = "message";
+          var category;
+          $.ajax({
+            type: 'GET',
+
+                contentType: 'application/json',
+                        url: 'http://localhost:3003/searchCategory?keyword='+value,
+                        success: function(data) {
+                            console.log('success');
+                        console.log(data);
+                        console.log(userData);
+                         $('#dropdown').html("");
+                          $.each(data, function() {
+            $("#dropdown").append(
+                $('<option/>', {
+                    value: this.name,
+                    html: this.name
+                })
+            );
+        });
+                        }
+                    });
+
+
+                });
+
+          var oldRawData;
+          var editrow = -1;
+    $("#ddCategories").change(function () {
+    //  alert('hi');
+       category = this.value;
+        $("#btnSubcategory").jqxButton();
+        $("#btnSubcategory").show();
+      // prepare the data
+  //    var data = generatedata(200);
+  console.log(category);
+
+  var url = "http://localhost:3003/listAllSubCategory?category="+category;
+  console.log(url);
+      // prepare the data
+      var source =
+      {
+          datatype: "json",
+          datafields: [
+              { name: 'subcategoryid', type: 'number' },
+              { name: 'name', type: 'string' },
+              { name: 'description', type: 'string' }
+          ],
+          id: 'id',
+          url: url
+      };
+
+      $("#subcategoryid").jqxInput({ theme: theme });
+      $("#name").jqxInput({ theme: theme });
+      $("#description").jqxInput({ theme: theme });
+
+      $("#subcategoryid").width(150);
+      $("#subcategoryid").height(23);
+      $("#name").width(150);
+      $("#name").height(23);
+      $("#description").width(150);
+      $("#description").height(23);
+
+      $("#name2").jqxInput({ theme: theme });
+      $("#description2").jqxInput({ theme: theme });
+
+
+      $("#name2").width(150);
+      $("#name2").height(23);
+      $("#description2").width(150);
+      $("#description2").height(23);
+
+    console.log(source);
+     var dataAdapter = new $.jqx.dataAdapter(source);
+     console.log(dataAdapter);
+
+      // initialize jqxGrid
+      $("#jqxgrid").jqxGrid(
+      {
+          width: 850,
+          source: dataAdapter,
+          pageable: true,
+          autoheight: true,
+          columns: [
+            { text: 'Sub-Category Id', datafield: 'subcategoryid', width: 200 },
+            { text: 'Name', datafield: 'name', width: 200 },
+            { text: 'Description', datafield: 'description', width: 190 },
+            { text: 'Edit', datafield: 'Edit', columntype: 'button', cellsrenderer: function () {
+               return "Edit";
+            }, buttonclick: function (row) {
+               // open the popup window when the user clicks a button.
+               editrow = row;
+            //   alert(editrow);
+               var offset = $("#jqxgrid").offset();
+               $("#popupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 60, y: parseInt(offset.top) + 60 } });
+               // get the clicked row's data and initialize the input fields.
+               var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', editrow);
+               oldRawData=dataRecord;
+               $("#subcategoryid").val(dataRecord.subcategoryid);
+               $("#name").val(dataRecord.name);
+               $("#description").val(dataRecord.description);
+               // show the popup window.
+               $("#popupWindow").jqxWindow('open');
+           }
+
+         },
+         { text: 'Delete', datafield: 'Delete', columntype: 'button', cellsrenderer: function () {
+            return "Delete";
+         }, buttonclick: function (row) {
+
+            editrow = row;
+         //   alert(editrow);
+            var offset = $("#jqxgrid").offset();
+            var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', editrow);
+            oldRawData=dataRecord;
+              $.ajax({
+                type: 'GET',
+
+                    contentType: 'application/json',
+                            url: 'http://localhost:3003/deleteSubcategory?subcategoryid='+oldRawData.subcategoryid,
+                            success: function(data) {
+                                console.log('success');
+                            console.log(data);
+                              if(data.length>0)
+                                {
+                                    $("#jqxNotification").jqxNotification("open");
+
+
+                                }
+                        }});
+
+        }
+
+        }
+          ]
+      });
+      // initialize the popup window and buttons.
+      $("#popupWindow").jqxWindow({
+          width: 250, resizable: false,  isModal: true, autoOpen: false, cancelButton: $("#Cancel"), modalOpacity: 0.01
+      });
+      $("#popupWindow").on('open', function () {
+          $("#subcategoryid").jqxInput('selectAll');
+      });
+      $("#popupWindowNewSubcat").jqxWindow({
+          width: 250, resizable: false,  isModal: true, autoOpen: false, cancelButton: $("#Cancel2"), modalOpacity: 0.01
+      });
+      $("#popupWindowNewSubcat").on('open', function () {
+          $("#subcategoryid").jqxInput('selectAll');
+      });
+
+      $("#Cancel").jqxButton({ theme: theme });
+      $("#Save").jqxButton({ theme: theme });
+      $("#btnSubcategory").click(function(){
+
+        $("#popupWindowNewSubcat").jqxWindow('open');
+
+      });
+      // update the edited row when the user clicks the 'Save' button.
+
+
+  });
+
+            $("#Save").click(function () {
+
+                var url;
+                console.log('edit row'+editrow);
+                if (editrow >= 0)
+                   {
+                     console.log('in if');
+                     url='http://localhost:3003/updateSubcategoryDetails';
+                     var row = { subcategoryid: $("#subcategoryid").val(), name: $("#name").val(), description: $("#description").val()
+                     };
+                     if(oldRawData.name!=row.name || oldRawData.subcategoryid!=row.subcategoryid || oldRawData.description!=row.description )
+                       {
+                             $.ajax(url, {
+                             type: 'POST',
+                             data: JSON.stringify(row),
+                             contentType: 'text/json',
+                             success: function() {  },
+                             error  : function() {   alert("Request failed: " ); }
+                         });
+                         var rowID = $('#jqxgrid').jqxGrid('getrowid', editrow);
+
+                       }
+                       $('#jqxgrid').jqxGrid('updaterow', rowID, row);
+                       $("#popupWindow").jqxWindow('hide');
+                }
+
+
+            });
+
+
+
+            $("#Save2").click(function () {
+
+                var url;
+                console.log('edit row'+editrow);
+
+                    console.log('in else');
+                    url='http://localhost:3003/addNewSubcategory?category='+category;
+                    var row = {  name: $("#name2").val(), description: $("#description2").val()
+                    };
+                    console.log(row);
+                            $.ajax(url, {
+                            type: 'POST',
+                            data: JSON.stringify(row),
+                            contentType: 'text/json',
+                            success: function() {  },
+                            error  : function() {   alert("Request failed: " ); }
+                        });
+
+                     $("#popupWindowNewSubcat").jqxWindow('hide');
+
+
+            });
+
+            });
+        </script>
+
+        <script type="text/javascript" src="/scripts/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxcore.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxdata.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxbuttons.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxscrollbar.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxmenu.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.pager.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.selection.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxnumberinput.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxwindow.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxlistbox.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxdropdownlist.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxinput.js"></script>
+        <script type="text/javascript" src="/scripts/demos.js"></script>
+        <script type="text/javascript" src="/generatedata.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.columnsresize.js"></script>
+        <script type="text/javascript" src="../../jqwidgets/jqxswitchbutton.js"></script>
+        <script type="text/javascript" src="../../jqwidgets/jqxcheckbox.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxnotification.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxpanel.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdatatable.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxtabs.js"></script>
+
+
+
+
+
+  </head>
+  <body>
+
+    <h1>Ebay</h1>
+    <p>Welcome to Ebay !</p>
+
+    Search Category:
+    <input type="text" id="txtSearch" />
+    <input type="button" value="Search" id="search" />
+      <select id="dropdown">
+
+  </select>
+    <br/>
+    <br>
+<!--
+  <select id="ddCategories">
+  <option value="Select"  >Select</option>
+  <%
+  console.log(categories);
+  for(i=0;i<categories.length;i++)
+  {
+  %>
+  <option value="<%=categories[i].name%>" ><%=categories[i].name%></option>
+  <% }
+
+  %>
+  </select>
+ <button id="btnSubcategory" style="display:none">Add New Subcategory</button>
+  <div id="jqxNotification">
+        <div>
+            Can not delete this category.You have at least 1 product listed under this category.</div>
+
+    </div>
+<table id="excelDataTable" border="1">
+  </table>
+
+  <div id='jqxWidget'>
+      <div id="jqxgrid"></div>
+      <div style="margin-top: 30px;">
+          <div id="cellbegineditevent"></div>
+          <div style="margin-top: 10px;" id="cellendeditevent"></div>
+     </div>
+
+     <div id="popupWindow" style="display:none">
+          <div>Edit</div>
+          <div style="overflow: hidden;">
+              <table>
+                  <tr>
+                      <td align="right">Sub-Category Id:</td>
+                      <td align="left"><input id="subcategoryid" /></td>
+                  </tr>
+                  <tr>
+                      <td align="right">Name:</td>
+                      <td align="left"><input id="name" /></td>
+                  </tr>
+                  <tr>
+                      <td align="right">Description:</td>
+                      <td align="left"><input id="description" /></td>
+                  </tr>
+
+                  <tr>
+                      <td align="right"></td>
+                      <td style="padding-top: 10px;" align="right">
+
+                  <input style="margin-right: 5px;" type="button" id="Save" value="Save" /><input id="Cancel" type="button" value="Cancel" /></td>
+                  </tr>
+              </table>
+          </div>
+     </div>
+     <div id="popupWindowNewSubcat" style="display:none">
+          <div>Add New Sub-Category</div>
+          <div style="overflow: hidden;">
+              <table>
+
+                  <tr>
+                      <td align="right">Name:</td>
+                      <td align="left"><input id="name2" /></td>
+                  </tr>
+                  <tr>
+                      <td align="right">Description:</td>
+                      <td align="left"><input id="description2" /></td>
+                  </tr>
+
+                  <tr>
+                      <td align="right"></td>
+                      <td style="padding-top: 10px;" align="right">
+
+                  <input style="margin-right: 5px;" type="button" id="Save2" value="Add" />
+                  <input id="Cancel2" type="button" value="Cancel" /></td>
+                  </tr>
+              </table>
+          </div>
+     </div>
+
+
+    <div class="events-container">
+        <div>Events:</div>
+        <div id="events"></div>
+    </div>
+-->
+
+
+
+
+<div id='jqxWidget'>
+   <div id='jqxTabs'>
+        <ul style='margin-left: 30px;'>
+            <li>Manage Categories</li>
+            <li>Manage Users</li>
+            <li>Manage Products</li>
+        </ul>
+        <div>
+
+                    Select the Category:
+                    <br/>
+                    <br/>
+                    <select id="ddCategories">
+                      <br/>
+                    <option value="Select"  >Select</option>
+                    <%
+                    console.log(categories);
+                    for(i=0;i<categories.length;i++)
+                    {
+                    %>
+                    <option value="<%=categories[i].name%>" ><%=categories[i].name%></option>
+                    <% }
+
+                    %>
+                    </select>
+                   <button id="btnSubcategory" style="display:none">Add New Subcategory</button>
+                    <div id="jqxNotification">
+                          <div>
+                              Can not delete this category.You have at least 1 product listed under this category.</div>
+                        <!--  <div style="font-size: smaller; text-align: center;">
+                              Click to view.</div>-->
+                      </div>
+                  <table id="excelDataTable" border="1">
+                    </table>
+
+                  <!--  <div id='jqxWidget'>-->
+                        <div id="jqxgrid"></div>
+                        <div style="margin-top: 30px;">
+                            <div id="cellbegineditevent"></div>
+                            <div style="margin-top: 10px;" id="cellendeditevent"></div>
+                       </div>
+
+                       <div id="popupWindow" style="display:none">
+                            <div>Edit</div>
+                            <div style="overflow: hidden;">
+                                <table>
+                                    <tr>
+                                        <td align="right">Sub-Category Id:</td>
+                                        <td align="left"><input id="subcategoryid" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">Name:</td>
+                                        <td align="left"><input id="name" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">Description:</td>
+                                        <td align="left"><input id="description" /></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td align="right"></td>
+                                        <td style="padding-top: 10px;" align="right">
+
+                                    <input style="margin-right: 5px;" type="button" id="Save" value="Save" /><input id="Cancel" type="button" value="Cancel" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                       </div>
+                       <div id="popupWindowNewSubcat" style="display:none">
+                            <div>Add New Sub-Category</div>
+                            <div style="overflow: hidden;">
+                                <table>
+
+                                    <tr>
+                                        <td align="right">Name:</td>
+                                        <td align="left"><input id="name2" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">Description:</td>
+                                        <td align="left"><input id="description2" /></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td align="right"></td>
+                                        <td style="padding-top: 10px;" align="right">
+
+                                    <input style="margin-right: 5px;" type="button" id="Save2" value="Add" />
+                                    <input id="Cancel2" type="button" value="Cancel" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                       </div>
+
+
+
+      <!--  </div>-->
+    </div>
+        <div>
+          <div id="table">
+                   </div>
+        </div>
+        <div>
+          Products:
+                    <div id="table2">
+                   </div>
+        </div>
+    </div>
+
+
+       </div>
+  </body>
+</html>

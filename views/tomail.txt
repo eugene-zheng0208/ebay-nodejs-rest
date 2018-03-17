@@ -1,0 +1,9 @@
+ALTER TABLE `ebay`.`orderitem` DROP FOREIGN KEY `status` ;
+
+ALTER TABLE `ebay`.`orderitem` DROP COLUMN `statusId` 
+
+, DROP INDEX `status_idx` ;
+
+----------------
+ALTER TABLE `ebay`.`order` ADD COLUMN `auctionId` INT NULL  AFTER `paymentMode` ;
+

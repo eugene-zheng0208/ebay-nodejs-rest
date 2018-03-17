@@ -1,0 +1,305 @@
+.selCatBox { background-color:#f9f9f9;border:solid 1px #ddd;display:block;margin:15px 0 15px 35px;padding:10px;width:807px; }
+#titleHd { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/step1.gif);margin-top:20px; }
+#titleHd div { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/cnr_green.gif);background-color:#99cc01; }
+#btnFindCat img { margin:2px 0 0 10px; }
+#titleCtrLyr { font-style:italic; }
+#Callout { position:absolute;float:left;margin-left:200px;z-index:1; }
+.CallOutImageTop { margin:0px 100px 3px 100px; }
+.calloutmsg { color:#000000;text-align:left; }
+#SwitchCalloutText_inp { background-color:#EEF9FF;border:2px solid #12C5D4;margin-left:-5px;margin-top:-5px;padding:5px;position:relative;width:200px; }
+#catHd { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/step2.gif); }
+#catHd div { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/cnr_green.gif);background-color:#99cc01; }
+#catTab { background:url(http://pics.ebaystatic.com/aw/pics/easylister/tab_bg.gif) #f9f9f9 repeat-x left bottom;padding-bottom:0;border-bottom:0;margin-bottom:0; }
+#catTab ul { list-style:none;margin:0;padding:8px 0 0 20px;height:28px; }
+#catTab li { background:url(http://pics.ebaystatic.com/aw/pics/easylister/tab_off_lt.gif) no-repeat left top;float:left;padding-left:6px;margin-right:5px; }
+#catTab li a { background:url(http://pics.ebaystatic.com/aw/pics/easylister/tab_off_rt.gif) no-repeat right top;color:#666;display:block;font-weight:bold;padding:6px 16px 6px 10px;text-decoration:none; }
+#catTab li a:hover { color:#006699; }
+#catTab li a:visited { color:#666; }
+#catTab .curCatTab { background:url(http://pics.ebaystatic.com/aw/pics/easylister/tab_on_lt.gif) no-repeat left top; }
+#catTab .curCatTab a { background:url(http://pics.ebaystatic.com/aw/pics/easylister/tab_on_rt.gif) no-repeat right top; }
+#sugCatLyr,#browseCatLyr { margin:10px; }
+.sugCatRow { width:662px; }
+#browseCatLyr select { float:left;margin-top:3px;width:215px;height:150px; }
+#selCatMsgBox { background-color:#ebebeb;border:inset 2px;float:left;margin-top:3px;width:210px;height:147px; }
+#selCatLyr { background-color:#f9f9f9;border:solid 1px #ddd;margin:10px 25px 0 35px;padding:10px; }
+#selCatLyr ul { margin:0;padding:0 0 0 20px; }
+#catBox { background-color:#fff;border:1px solid #ddd;border-top:1px solid #fff;margin-bottom:0;padding-right:0; }
+#psBox { border-top:1px solid #fff; }
+#psIntro { float:left;margin-right:10px;width:470px; }
+#psGraphic { margin:0; }
+#psScroll { border:solid 1px #ddd;height:400px;width:100%; }
+#pfResults { margin:15px; }
+#piBox ul { margin-bottom:5px; }
+.ctlDivLine { border-width:1px 0 0 0;border-style:solid;border-color:#ccc;padding:15px 5px 15px 2px; }
+.inpRdoPrdRes { padding:15px 0 0 0; }
+.inpRdoPrdRes input { float:left;height:75px;margin:0;padding:0; }
+.inpRdoPrdRes span.inpCap { margin-top:0;color:#000; }
+.inpRdo,.inpChkBox,.inpTypImg { padding:4px; }
+.lftImage { margin:0 10px 0 0;border:0;float:left; }
+.floatMid { margin-left:75px; }
+#picHd { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/step3.gif); }
+#picHd div { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/cnr_yellow.gif);background-color:#fecb00; }
+#picBox { padding:10px;width:615px; }
+#pics { margin-top:15px;margin-bottom:0; }
+.picFrm { background:url(http://pics.ebaystatic.com/aw/pics/easylister/picwell.gif) no-repeat left top;float:left;text-align:center;width:124px; }
+.picFrmGPic { background:url(http://pics.ebaystatic.com/aw/pics/easylister/picwell_2.gif) no-repeat left top;margin-top:-12px;float:left;text-align:center;width:124px; }
+.picTxt { background-color:#fecb00;color:gray;font-size:x-small;width:110px;height:14px;margin:5px 5px 5px 5px;padding-bottom:2px; }
+.picFrm .btn_whiteRt { margin-top:50px;margin-left:-10px; }
+.picFrmGPic .btn_whiteRt { margin-top:40px;margin-left:-10px; }
+.picwell { background-color:#ccc;margin:10px 0 0 10px;width:96px;height:96px; }
+.picFee { margin-top:45px; }
+.camIcon { margin:12px 0 0 3px; }
+#stockPic { border:solid 1px #ccc; }
+.selfHostPicFields { margin-left:25px; }
+#btnAddPic1,#btnAddPic2,#btnAddPic3,#btnAddPic4,#btnRemPic1,#btnRemPic2,#btnRemPic3,#btnRemPic4 { width:100px; }
+#galleryBox { border:solid 1px #888;padding:0; }
+#innerGalleryBox { border:solid 3px #fecb00;padding:10px 15px 10px 15px; }
+#galPromoLyr { color:#009900;margin-left:25px; }
+.imageWarningIconPosition { display:block;margin-left:-20px;position:relative;top:-57px;left:108px;_left:45px;width:16px;height:16px; }
+.picFrmGPic .imageWarningIconPosition { top:-73px;left:105px; }
+.picFrmNAS .imageWarningIconPosition { top:-73px; }
+.picFrmIE6 .imageWarningIconPosition { _top:-57px; }
+.imageWarningIconPosition img { position:absolute; }
+.warnlayerbackground { background-color:#fff;border:solid 1px #aaa;padding:5px;position:absolute;width:460px;z-index:1000; }
+.warnlayerbackground td { color:#555; }
+.warnMsgUL { margin:10px;margin-left:50px;padding:0; }
+#descHd { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/step4.gif); }
+#descHd div { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/cnr_red.gif);background-color:#fe0000; }
+#moreAttrLink { background-color:#e8e8e8;border:solid 1px #cccccc;padding:10px 10px; }
+.grayBox { background-color:#e8e8e8;border:solid 1px #cccccc;padding:10px; }
+.help { color:#666; }
+.idtLftRgt { padding-left:5px;padding-right:5px; }
+.idtBtm { padding-bottom:5px; }
+#descBox { width:635px; }
+.rteToolbar { background-color:#eee;border-bottom:solid 1px #ccc;padding:5px 0 5px 10px;width:625px; }
+.rteToolbar select { margin-right:10px; }
+.rteToolbar img { border:0;margin-right:5px; }
+.rte { width:635px; }
+.rte textarea,.rteIframe { background-color:#fff;height:267px;width:635px; }
+#lyrGrayout_sec { background-image:url(http://pics.ebaystatic.com/aw/pics/globalAssets/imgOverlay2_1x1.png);_background-image:url(http://pics.ebaystatic.com/aw/pics/globalAssets/imgCCCCCCpattern1.gif);left:0px;top:0px;position:absolute;visibility:hidden;z-index:1; }
+#priceHd { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/step5.gif); }
+#priceHd div { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/cnr_blue.gif);background-color:#01009a; }
+#priceSec div { padding-right:3px;padding-bottom:5px; }
+#binImage { position:relative;top:3px; }
+.shipRow { margin-bottom:10px; }
+#shipCalcRow { margin-top:5px; }
+.EZshipcostinstext { color:#333333;font:bold x-small Verdana;margin-top:2px;padding-left:10px; }
+.EZshipcostLearnmore { color:#0000cc;font:x-small Verdana;padding-left:10px;text-decoration:none; }
+.insertionFeeText { margin-top:2px;padding-left:10px; }
+#pmHd { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/step6.gif); }
+#pmHd div { background-image:url(http://pics.ebaystatic.com/aw/pics/easylister/cnr_blue.gif);background-color:#01009a; }
+#payPalLogo { margin-left:3px;margin-right:3px;position:relative;top:3px; }
+#pmCip { margin-left:20px; }
+#pmCipDE { margin-left:25px; }
+#pmCipInstr,pmCipInstr { margin-left:45px; }
+.amielmg { float:left;height:100px; }
+#helpLyr { position:absolute;width:300px;z-index:10; }
+#helpBdr { background-color:#ffffcc;border:solid 1px #666;padding:10px; }
+#helpTxt p { margin:0 0 15px 0;padding:0; }
+#helpCloseBtn { text-align:right; }
+#finalFeeRow { font-weight:bold; }
+#finalFeeTxt { font-size:medium; }
+#aidZ1 { font-weight:bold; }
+#lyrSwitchFormConfirm { background:#fff;border:solid 1px #ddd;padding:10px;position:absolute;z-index:2; }
+#lyrSwitchFormConfirm img { padding-right:10px; }
+#lyrSwitchFormConfirm .title,#lyrOptionForPayPalPreSelect .title { font-weight:bold;margin-bottom:10px; }
+#lyrSwitchFormConfirm .actions { margin-top:10px; }
+#lyrSwitchFormConfirm .actions a,#lyrOptionForPayPalPreSelect .actions a { margin-left:10px; }
+#lyrOptionForPayPalPreSelect { position:absolute;z-index:2;top:125px; }
+#lyrOptionForPayPalPreSelect table { background:#fff;border:solid 1px #ddd;margin:0 auto;position:relative;width:450px; }
+.activeTag { background-color:#3366cc;color:#fff; }
+.passiveTag { background-color:#fff;clear:both; }
+.stChild { padding-left:20px;background:transparent url(http://pics.ebaystatic.com/aw/pics/sell/imgDependantTagLink.gif) no-repeat scroll 0 0; }
+.MultiValueDivWidth { width:300px;vertical-align:top; }
+.MultiValueNoJsDivWidth { width:400px; }
+.MultiValueSpanWidth { width:50%;vertical-align:top; }
+.MultiValueDropDown { clear:both;width:100%; }
+.marginTop { margin-top:10px; }
+.MultiValuePadding { padding-bottom:10px; }
+.TagOuterLayer { margin-top:-5px; }
+.ReadOnlyTagName { margin:10px 10px 0 0;white-space:nowrap;float:left; }
+.En_SellTagOverLay { background-color:#fff;border:solid 1px #666;left:-7px;_left:-5px;padding:10px;_padding:10px 10px 0 10px;position:absolute;width:350px;height:120px;min-height:120px;height:auto;z-index:4; }
+.En_SellTagOverLay_MV { background-color:#fff;border:solid 1px #666;left:-7px;_left:-5px;padding:10px;_padding:10px 10px 0 10px;position:absolute;width:480px;height:120px;min-height:120px;height:auto;z-index:4; }
+.non_En_SellTagOverLay { background-color:#fff;border:solid 1px #666;left:-7px;_left:-5px;padding:10px;position:absolute;width:470px;_width:500px;height:120px;min-height:120px;height:auto;z-index:4; }
+.En_tagL { border:solid 1px gray;position:absolute;width:307px;_width:315px;padding:5px;background-color:#fff;z-index:3;z-index:10; }
+.En_tagL div { width:307px;_width:315px; }
+.En_tagSm { border:solid 1px gray;position:absolute;width:88px;_width:96px;padding:5px;background-color:#fff;z-index:3;z-index:10; }
+.En_tagSm div { width:88px;_width:96px; }
+.En_SellTagShadow { background-color:#ccc;margin-top:5px;position:relative;width:0px;height:0px;z-index:3; }
+.non_En_SellTagShadow { background-color:#ccc;margin-top:5px;position:relative;width:0px;height:0px;z-index:3; }
+.En_OverlayContentDiv { clear:both;padding-bottom:0;_padding-bottom:5px;float:left;width:96%;margin-top:-9px;_margin-top:-10px; }
+.non_En_OverlayContentDiv { clear:both;padding-bottom:0;_padding-bottom:5px;float:left;width:96%;margin-top:-8px;_margin-top:-10px; }
+.En_Overlay_ST { position:absolute;z-index:9999;width:320px; }
+.En_Overlay_ST_MV { position:absolute;z-index:9999;width:490px; }
+.non_En_Overlay_ST { position:absolute;z-index:9999;width:470px;_width:500px; }
+.ItmSpecClsBtn { position:absolute;float:right;top:10px;right:10px; }
+.LineSeparator { background-color:#cecfce;margin:10px 0 0; }
+.SaveButtonDiv { float:right;padding-top:20px;_padding-top:7px;position:relative;text-align:right;width:100%; }
+.HideInTopLayer { color:#5d5d5d;padding:10px 0; }
+#ItemSpecifics .HideInTopLayer { display:none; }
+.HideInTopLayer1 { color:#999;padding-bottom:10px;width:100%;float:left; }
+#ItemSpecifics .HideInTopLayer1 { display:none; }
+.HideInTopLayer2 { color:#999;padding-bottom:10px;width:100%;float:left; }
+#ItemSpecifics .HideInTopLayer2 { display:none; }
+.HideInTopLayer2 { color:#999; }
+#ItemSpecifics .HideInTopLayer2 { display:none; }
+#ItemSpecifics .CustomDiv { padding-top:25px; }
+.OverlayContentDiv { clear:both;padding-bottom:10px;float:left;width:90%;margin-top:-9px;_margin-top:-10px; }
+.itm_spec table { width:100%; }
+#ItemSpecifics { margin-top:-3px;_margin-top:-10px; }
+.Float_Left { float:left;width:150px; }
+.MultiValueCheckbox { float:left;padding-right:2px;_padding-right:0;margin-top:0;_margin-top:-2px;_width:3%; }
+.MultiValueContent {  }
+.DropDownPadding { padding-top:3px; }
+#ItemSpecifics .PaddingInTopLayer { padding:8px 0 2px 0; }
+#contentDiv .PaddingInTopLayer { padding-bottom:15px;font-size:medium;_font-size:small; }
+.DropDownArrow { margin-left:-1px;margin-top:-4px;_margin-top:0; }
+.PaddingTop,.itm_spec { padding-top:10px; }
+.Tray { margin-top:-15px; }
+.SuggestTag { margin:10px 10px 20px 0; }
+#TopSectionLyr,#SuggestedSectionLyr { border:0;margin-top:0px;padding:0; }
+.spellcheck { border:0;position:static;width:100%; }
+.En_tagoptions { border:solid 1px gray;position:absolute;width:137px;_width:146px;padding:5px;background-color:#fff;z-index:10; }
+.En_tagoptions div { width:137px;_width:146px; }
+.non_En_tagoptions { border:solid 1px gray;position:absolute;width:307px;_width:315px;padding:5px;background-color:#fff;z-index:10; }
+.non_En_tagoptions div { width:307px;_width:315px; }
+.navigation { font-size:x-small;_font-size:xx-small; }
+.shipPrefsLyrCloseBtn { float:right;margin-bottom:10px;_margin-bottom:0; }
+.easyLister { margin-top:-8px; }
+.disableCtrl { background:#CCCCCC; }
+.clr { clear:both; }
+.disTxt { color:#000000;font-weight:bold;cursor:default;text-decoration:none; }
+.grayLine { border-top:solid 1px #cecfce;padding-left:6px;margin:15px 0 5px 0; }
+.idtTopBtm { padding-top:10px;padding-bottom:10px; }
+.idtRgt { padding-right:10px; }
+.mgnTopSm { margin-top:5px; }
+.lst { margin:0;padding:0; }
+.lst li { margin-left:20px;padding:0; }
+.verSpc { margin-top:5px; }
+.isRequiredIcon { background-image:url(http://pics.ebaystatic.com/aw/pics/globalAssets/imgRequired.gif);_background:url(http://pics.ebaystatic.com/aw/pics/globalAssets/imgRequired.gif) no-repeat top right bottom left;padding-left:5px;padding-right:5px;border:0;background-repeat:no-repeat; }
+#separator { border-bottom:1px solid #CCCCCC;padding-top:10px; }
+.MultiPadding { font-size:medium;padding-top:10px; }
+#paymsg { padding-top:7px;padding-bottom:7px; }
+.fntsizS { font-size:13px;font-weight:bold;padding-top:15px; }
+.fntsizM { margin-top:10px;font-size:16px;font-weight:regular; }
+.Mgntp { font-size:13px;font-weight:bold;margin-top:25px; }
+.MgnFnt { margin-top:15px;font-size:13px;font-weight:regular; }
+.Mgntpfnt { margin-top:10px;font-size:13px;font-weight:regular; }
+.overallpad { border:solid 1px #ddd;margin:0 35px 15px 35px;padding:0 0 0 20px;display:block; }
+.Imagesection { width:513px; }
+.Textsect { margin-right:513px; }
+#msg .cnt { background-color:#fff;min-height:18px; }
+#msg .info .cnt,#msg .warning .cnt,#msg .error .cnt,#msg .success .cnt { margin-left:20px;padding-left:5px; }
+#msg .info.bdr .cnt,#msg .warning.bdr .cnt,#msg .error.bdr .cnt,#msg .success.bdr .cnt { padding:5px; }
+#msg .warning.bdr { background-color:#fe9900;background-position:-708px 4px; }
+#msg .warning { background:url(http://pics.ebaystatic.com/aw/pics/cmp/ds2/sprIcons.png) no-repeat -708px 0; }
+#msg .info.bdr,#msg .warning.bdr,#msg .error.bdr,#msg .success.bdr { padding:1px; }
+.background { border:1px solid rgb(201,199,200);height:285px;background-image:url(http://pics.ebaystatic.com/aw/pics/payments/imgPIgradSYI_10x187_RPT.png);padding:30px 0pt 0pt 29px; }
+.Contenttitle { color:#FF8713;font-size:28px; }
+.padleft { padding-left:47px; }
+.subtitle { margin-top:10px; }
+.maincontent { padding-top:30px;width:100%; }
+#aInstantOffer { font-weight:bold;font-size:15px;font-family:Trebuchet MS;height:30px;background:url(http://p.ebaystatic.com/aw/pics/cmp/ds2/sprButtons.png) repeat-x scroll -10pt -43px #3684CE !important;padding:0pt 12px 5px;white-space:nowrap;color:#fff;border:0px; }
+.instElOffer { font-size:28px;text-align:center;padding-left:5px;font-weight:bold;font-family:arial; }
+.instElSell { padding:0 10px;text-align:left;max-width:140px; }
+.fnt12 { font-size:12px; }
+.smlTxt { font-size:small; }
+.cnclLnk { position:absolute;font-size:12px;font-family:Trebuchet MS;margin:-45px 0pt 0pt 375px; }
+.mgn10 { margin-left:10px; }
+.valign { vertical-align:top;font-size:large; }
+.picsCloseBtn { float:right;top:10px;right:10px;position:absolute; }
+.floatleft { float:left; }
+.paycont1 { width:20%; }
+.font { color:#666666;font-family:Arial sans-serif;font-size:14px; }
+.padleft1 { padding-left:10px; }
+.ebayaccept { font-weight:bold;vertical-align:top;line-height:15px; }
+.margin { margin:0pt; }
+.pad { padding:4px; }
+.paddingleft { padding-left:15px;font-size:13px; }
+.width1 { width:30%; }
+.padtop { padding-top:15px; }
+.width2 { width:171px; }
+.content2 { padding-left:155px; }
+.width3 { width:33%; }
+.checkcont { display:block;position:relative;padding-top:30px; }
+.checkb2 { padding-left:158px;margin-top:-18px; }
+.text { text-decoration:none; }
+.fontsize { font-size:13px; }
+.pibackground { background-image:url(http://pics.ebaystatic.com/aw/pics/payments/imgPIgradSYI_10x187_RPT.png);padding:5px 0 0 5px;margin-left:-8px;margin-right:-9px; }
+.contentTitle { font:Arial;font-size:28px;color:#FF8713; }
+.furInfo { padding-left:15px; }
+.furLink { font-size:16px;color:#002F9B !important;text-decoration:none; }
+.pisubtitle { margin-top:5px; }
+.pifont { font-size:14px;color:#666666; }
+.pifont1 { font-size:13px;color:#333333; }
+#ulpayments { list-style-type:none;margin:0;padding-left:5px; }
+.pipcss { margin:10px 0; }
+.PIpad { padding-left:20px;margin-top:-5px;float:left; }
+.font { font-family:Arial; }
+.width { width:130px; }
+.newimage { margin:0;position:relative; }
+.marginie { margin:-5px -10px; }
+.imagespace { padding-left:35px; }
+.arrowmar { margin-right:20px; }
+.border { border:1px solid #cccccc; }
+.newMgn { margin-left:-10px;margin-top:-8px; }
+.fltLeft { float:left; }
+.padBtm { padding-bottom:5px; }
+.vertical { vertical-align:middle;height:80px;display:table-cell;width:92px; }
+.centerImage { text-align:center;display:block; }
+.arwpad { padding:0 20px; }
+#ulpayments { list-style:none;padding-left:5px;margin:10px 0; }
+.w82 { width:72%;float:left; }
+.instBblHelp { background:url(http://pics.ebaystatic.com/aw/pics/cmp/ds2/sprBubbleHelp1.png) no-repeat scroll -474px 0 transparent;display:inline-block;width:15px;height:12px;cursor:pointer; }
+.scb { background-color:#f9f9f9;border:solid 1px #ddd;display:block;margin:15px 0 15px 35px;width:827px; }
+.pSm { padding:3px; }
+.pbSm { padding-bottom:8px; }
+.orDiv { background:none repeat scroll 0 0 transparent;border-right:1px solid #CCCCCC;height:22px;margin:0 9px auto;width:1px; }
+.fntSzMe { font-size:x-large; }
+.vt { vertical-align:top;font-size:medium; }
+#instHlp { float:right;margin-top:-40px; }
+.tib-ov .ov-t,.tib-ov .ov-t b,.tib-ov .ov-t i,.tib-ov .ov-b,.tib-ov .ov-b b,.tib-ov .ov-b i,.tib-ptr { background-image:url(http://pics.ebaystatic.com/aw/pics/cmp/ds2/sprTempInfoBox.png); }
+.tib-lt,.tib-lb,.tib-rt,.tib-rb { height:32px;width:25px; }
+.tib-lt { left:-25px;top:10px; }
+.tib-ptr { position:absolute; }
+.tib-ov .tib-p { padding:17px 11px 9px; }
+.ov-fl u.ov-clr { clear:both;display:block; }
+.ov-t,.ov-t b,.ov-t i,.ov-b,.ov-b b,.ov-b i { background-image:url(http://pics.ebaystatic.com/aw/pics/cmp/ds2/sprOverlayVertLg.png); }
+.tib-ov .ov-b i { margin-right:29px; }
+.tib-lt { background:none no-repeat scroll 2px -203px transparent; }
+.ov-t b,.ov-b b { background:none no-repeat scroll 100% -70px transparent;display:block;margin-left:28px; }
+td.ov-t b,td.ov-b b { max-height:100%; }
+.ov-t i,.ov-b i { background:none repeat-x scroll 0 -150px transparent;display:block;margin-right:28px;padding-top:28px; }
+.ov-b { background:none no-repeat scroll 0 -33px transparent; }
+.ov-b b { background:none no-repeat scroll 100% -108px transparent; }
+.ov-b i { background:none repeat-x scroll 0 -175px transparent; }
+.ov-cnt { background:none repeat scroll 0 0 #FFFFFF;display:inline;float:left;margin:-27px 19px -6px 0;position:relative; }
+.ov-sm .ov-cnt { margin:-27px 14px -14px 0; }
+.tib-ov .ov-cnt { background:none repeat scroll 0 0 #FFFFE0;margin:-21px 11px -4px 2px; }
+.ov-c1,.ov-c2 { background:none repeat-y scroll 0 0 transparent;float:left; }
+td.ov-c1 { float:none; }
+.ov-c2 { background:url(http://pics.ebaystatic.com/aw/pics/cmp/ds2/sprOverlayRtLg.png) repeat-y scroll 100% 0 transparent;border-left:1px solid #CCCCCC;float:left; }
+.ov-c2 { background-image:url(http://pics.ebaystatic.com/aw/pics/cmp/ds2/sprOverlayRtSm.png); }
+.tib-ov .ov-c1 { background:none repeat-y scroll 0 0 transparent; }
+.tib-ov .ov-c2 { border-left:5px solid #FDE300; }
+.tib-ov .ov-c1,.tib-ov .ov-c2 { background-image:url(http://pics.ebaystatic.com/aw/pics/cmp/ds2/imgTempInfoBox.png); }
+.ov-t { background:none no-repeat scroll 0 0 transparent; }
+.ov-fl { float:left; }
+.ov-w { position:absolute;visibility:hidden; }
+.tib-ov .ov-cl,.tib-ov .ov-cl:hover { margin:-11px -15px 0 0; }
+.tib-ov .tib-p { padding:5px 8px 6px; }
+.tib-ov .tib-hd,.tib-ov .tib-cnt { color:#333333;font-size:1em;margin:0; }
+.ov-ptr { background-image:url(http://pics.ebaystatic.com/aw/pics/cmp/ds2/sprOverlayPointers.png);position:absolute; }
+.ov-cl,a.ov-cl:hover { background:url(http://pics.ebaystatic.com/aw/pics/cmp/ds2/iconClose.png) no-repeat scroll 0 0 transparent;height:12px;margin:-7px -12px 10px 10px;position:absolute;right:20px;text-decoration:none;top:17px;width:12px; }
+.tib-ptr { background-image:url(http://pics.ebaystatic.com/aw/pics/cmp/ds2/sprTempInfoBox.png); }
+.inst-img { margin-bottom:-15px; }
+.inst-text { font-size:16px; }
+.inst-pad { white-space:nowrap; }
+.fnt13 { font-size:14px;white-space:nowrap; }
+.inst-text1 { font-size:11px; }
+.fnt14 { font-size:13px; }
+.inst-but { padding-top:16px; }
+.inst-val { font-size:24px;padding-right:13px; }
+.inst-font { font-size:12px; }
+
+/* b=17270647 */

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="HTML Tidy for Linux (vers 25 March 2009), see www.w3.org">
+<title></title>
+
+<script src="http://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+    $( document ).ready(function() {
+        console.log( "document loaded" );
+                 $("#header").load("header"); 
+    });
+ 
+    $( window ).load(function() {
+        console.log( "window loaded" );
+    });
+</script>
+<style type="text/css">
+ div.c18 {margin-left:50px;}
+ div.c17 {margin-right: 5px;}
+ span.c16 {display: none;}
+ input.c15 {display: none;}
+ div.c14 {margin-top: 7px;}
+ div.c13 {margin-top: 5px; margin-left: -4px;}
+ div.c12 {margin-top:5px}
+ fieldset.c11 {display: block;}
+ div.c10 {display: block;}
+ table.c9 {width: 702px; height: 143px;}
+ label.c8 {font-weight: bold;}
+ div.c7 {display: none; visibility: hidden;}
+ input.c6 {margin-left: 28px;}
+ table.c5 {text-align: left; width: 600px; height: 80px;}
+ td.c4 {vertical-align: center;}
+ td.c3 {vertical-align: center; width: 120px;}
+ select.c2 {width: 250px;}
+ td.c1 {vertical-align: center; width: 40px;}
+</style>
+</head>
+<body>
+<div id="header"></div>
+<div id="productForm" class="c18">
+<form method="post" id="ezForm" name="ezForm" enctype="multipart/form-data" action="UploadProductImage">
+<table class="c5" border="1" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td class="c1">Category :        <br></td>
+<td class="c3"><select id="Category" name="Category" class="c2">
+<option value="-Select-">-Select-</option>
+</select></td>
+</tr>
+<tr>
+<td class="c4">Sub Category :<br></td>
+<td class="c4"><select id="SubCategory" name="SubCategory" class="c2"></select></td>
+</tr>
+</tbody>
+</table>
+<br>
+<div><label>Descriptive Title:</label> <input class="c6" id="title" name="title" size="70" maxlength="80" type="text"> (80 Characters)</div>
+<br>
+<div>
+<div class="secHead">
+<h2>Add Product Picture:</h2>
+</div>
+<br>
+<table border="0" cellpadding="0" cellspacing="10">
+<tbody>
+<tr valign="top">
+<td>
+<div>
+<div id="picFrm1" class="picFrm picFrmIE6">
+<div id="picFrmTxt" class="picTxt c7">Your Gallery Picture</div>
+<div id="picWellLyr1" class="picwell"><img id="picWell1" src="/eBay%20_%20Sell%20_%20Create%20Your%20Listing_files/camera.gif" class="camIcon" alt="Add a photo"></div>
+<span class="btn btn_whiteRt" id="lyrAddPic1"><input name="imageFile" id="imageFile" type="file"> <!--   <input id="saveImage" name="saveImage" value="Save" type="submit"> --></span></div>
+<input id="pictureUrl" name="pictureUrl" tabindex="-1" value="" type="hidden"></div>
+</td>
+<td><br></td>
+</tr>
+</tbody>
+</table>
+<input name="selfHostGallery" value="false" type="hidden"><input name="selfHostGalleryUrl" value="" type="hidden"></div>
+<br>
+<br>
+<div id="pricediv">
+<div class="sec"><a name="secHdr3_anch"></a>
+<div class="secHead" id="picHd">
+<h2>Item Description</h2>
+</div>
+<fieldset id="attrBox" class="fldBoxTags c11">
+<div id="attrsBox">
+<div id="attr" class="c10"><br>
+<div id="itmspctle">Buyers often refine their search using these item specifics. If you don't provide these details here, your listing may not appear in their search results.</div>
+<div class="itm_spec">
+<table class="c9" summary="" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td valign="top">
+<div id="ItemSpecifics">
+<div id="attrCond" class="idtTop fullWdth"><span class="nextGenBox"><br>
+<label id="" for="itemCondition" class="c8">Item condition </label> <select id="itemCondition" name="itemCondition">
+<option selected="selected" value="-1">-Select-</option>
+<option value="1">New</option>
+<option value="2">Manufacturer refurbished</option>
+<option value="3">Seller refurbished</option>
+<option value="4">Used</option>
+</select></span>
+<div><span class="nextGenBox"><br></span>
+<h3><span class="nextGenBox">MPN</span></h3>
+<span class="nextGenBox"><br></span>
+<div><span class="nextGenBox">(Enter the manufacturer's part number to optimize your listing for internet search.)<br></span></div>
+<span class="nextGenBox"><br></span>
+<div><span class="nextGenBox"><input id="mpn" name="mpn" maxlength="50" size="49" type="text"></span></div>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="idt"></div>
+</div>
+</fieldset>
+</div>
+<br>
+<div>
+<div>
+<h2>Set a price and shipping details</h2>
+</div>
+<br>
+<fieldset>
+<div>
+<table>
+<tr>
+<td><input id="isBiddingEnabled" name="isBiddingEnabled" value="BiddingEnabled" type="checkbox"> <label id="" for="isBiddingEnabled">Enable Bidding</label><br></td>
+</tr>
+<tr>
+<td><label id="" for="startPrice">Start auction bidding at $ </label></td>
+<td><input id="startPrice" name="startPrice" value="0.99" size="10" maxlength="10" type="text"></td>
+<td><label id="" for="duration"> lasting for </label>  <a name="duration_anch"></a> <select id="duration" name="duration">
+<option value="3">3 Days</option>
+<option value="5">5 Days</option>
+<option selected="selected" value="7">7 Days</option>
+<option value="10">10 Days</option>
+</select></td>
+</tr>
+<tr>
+<td>
+<div class="c12">Product Quantity</div>
+</td>
+<td><input name="itemQty" id="itemQty" type="text"></td>
+</tr>
+<tr>
+<td><label id="" for="binPrice"><br>
+Buy It Now price $     </label></td>
+<td>
+<div><input id="binPrice" name="binPrice" size="10" maxlength="10" class="enabled" type="text"></div>
+</td>
+</tr>
+</table>
+<br></div>
+</fieldset>
+</div>
+<div id="returnPolicy">
+<div class="fl c13"></div>
+<div class="c14"><label for="returnsAccepted"><strong>All returns accepted. Your buyer has to contact you within 14 days after the item was received for a refund.<br>
+The buyer would pay for return shipping.</strong></label></div>
+<input id="itemReturnedWithin" name="itemReturnedWithin" value="Days_14" type="hidden"><input id="refundGivenAs" name="refundGivenAs" value="MoneyBack" type="hidden"><input id="returnsPaidBy" name="returnsPaidBy" value="Buyer" type="hidden"><input id="textArea" name="textArea" value="The buyer has 14 days to return the item (the buyer pays shipping fees). The item will be refunded." type="hidden"></div>
+<div class="sec"><br>
+<div class="secHead" id="priceHd">
+<h2>Please provide your SSN details<br></h2>
+</div>
+<fieldset class="fldBox">
+<div id="paymentmethod_sec"><br>
+<div><label id="" for="paypalEmail">Enter your SSN here</label><a name="paypalEmail_anch"></a> <input id="paypalEmail" name="paypalEmail" value="" maxlength="10" size="30" type="text"></div>
+<br></div>
+<div><input id="brMasterChk" name="brMasterChk" value="true" checked="checked" type="checkbox"><label for="brMasterChk">Block bids from buyers who might make transactions more difficult or expensive.</label></div>
+<input id="payPalPreSelect" name="payPalPreSelect" value="true" class="c15" type="checkbox"></fieldset>
+</div>
+<div id="footer">
+<div id="footerLt"><br>
+<div id="footerTxt"><span id="finalFeeRow">Fee to insert your listing:  <span id="finalFeeTxt"><span id="feeBox_final">$0.35</span></span></span> <span id="footerConvertListingLyr" class="c16"></span>
+<div class="fl c17"><span id="footerConvertListingLyr" class="c16"><img src="eBay%20%3E%20Sell%20%3E%20Create%20Your%20Listing_files/iconAlert_16x16.gif" alt="Warning" border="0"></span></div>
+<span id="footerConvertListingLyr" class="c16"></span></div>
+<div id="footerRt">
+<div id="footerBtns"><span class="btn_whiteRt"><br>
+<input id="aidZ1" name="aidZ1" class="btn_whiteLt" value="Save and preview" type="submit"></span></div>
+</div>
+</div>
+</div>
+</div>
+</form>
+<script type="text/javascript">
+  $(document).ready(function()
+  {
+  $("#header").load("header"); 
+
+    $.ajax({
+    type: 'get',
+    contentType: 'application/json',
+    url: '/GetCategories',
+                        success: function(data) {
+                                                 $('#Category').html("");
+                                                                                                 $('#Category').append('<option value=-1>-Select-<\/option>');
+                          $.each(data, function() {
+            $("#Category").append(
+                $('<option/>', {
+                    value: this.categoryId,
+                    html: this.name
+                })
+            );
+        });
+                                                    
+    }
+
+                      });
+});
+
+   $(function(){
+                $('#Category').click(function(e){
+                   
+                  var value=$("#Category").val();
+
+                  $.ajax({
+                             type: 'get',
+                           contentType: 'application/json',
+                              url: '/GetSubCategories?categoryId='+value,
+                                success: function(data) {
+                                                 $('#SubCategory').html("");
+                          $.each(data, function() {
+                          $("#SubCategory").append(
+                              $('<option/>', {
+                    value: this.subcategoryId,
+                    html: this.name
+                      })
+            );
+        });
+                                                    
+    }
+
+                      });
+                    
+                    
+                });
+    });
+
+
+
+</script> <script type="text/javascript" src="scripts/gen_validatorv4.js">
+</script> <script type="text/javascript">
+
+var frmvalidator  = new Validator("ezForm");
+frmvalidator.addValidation("title","req","Please enter product title");
+frmvalidator.addValidation("title","maxlen=80","Maximum length is 80 charcter");
+
+frmvalidator.addValidation("paypalEmail","minlen=9","The minimum length for SSN is 10 Characters");
+frmvalidator.addValidation("paypalEmail","numeric","Please enter numberic data in SSN");
+frmvalidator.addValidation("paypalEmail","maxlen=9","The minimum length for SSN is 10 Characters");
+
+frmvalidator.addValidation("itemQty","numeric","Please enter numeric data in quantity");
+frmvalidator.addValidation("itemQty","gt=0","Please enter numeric data in quantity");
+
+frmvalidator.addValidation("itemCondition","req","Please select condition");
+frmvalidator.addValidation("binPrice","numeric","Please enter numeric data in price");
+
+frmvalidator.addValidation("binPrice","gt=0","Please enter value greater than 0");
+
+
+
+frmvalidator.addValidation("itemQty","gt=0","Please enter qty value greater than 0 ");
+
+frmvalidator.addValidation("mpn","req","Please enter mpn value");
+
+frmvalidator.addValidation("paypalEmail","req","Please enter SSN");
+
+frmvalidator.addValidation("Category","gt=0","Please select one category.");
+
+//frmvalidator.setAddnlValidationFunction(DoCustomValidation);
+if(frmvalidator.isBiddingEnabled.value)
+  {
+  alert('in if');
+  frmvalidator.addValidation("startPrice","req","Please enter base price for auction.");
+  frmvalidator.addValidation("startPrice","gt=0","Add non zero base price.");
+  
+    
+  }
+/*function DoCustomValidation()
+{
+  var frm = document.forms["ezForm"];
+  if(frm.isBiddingEnabled.value == "BiddingEnabled")
+  {
+  frm.addValidation("startPrice","req","Please enter base price for auction.");
+  frm.addValidation("startPrice","gt=0","Add non zero base price.");
+  
+    
+  }*/
+
+
+</script></div>
+</body>
+</html>

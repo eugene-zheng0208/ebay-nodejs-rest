@@ -1,0 +1,32 @@
+ALTER TABLE `ebay`.`order` DROP FOREIGN KEY `orderBy` ;
+
+ALTER TABLE `ebay`.`order` 
+
+  ADD CONSTRAINT `orderBy`
+
+  FOREIGN KEY (`orderedBy` )
+
+  REFERENCES `ebay`.`person` (`userId` )
+
+  ON DELETE NO ACTION
+
+  ON UPDATE NO ACTION;
+
+----------------
+ALTER TABLE `ebay`.`transaction` DROP COLUMN `approvalCode` ;
+
+-------------------------------------------------
+ALTER TABLE `ebay`.`orderitem` DROP FOREIGN KEY `sellBy` ;
+
+ALTER TABLE `ebay`.`orderitem` 
+
+  ADD CONSTRAINT `sellBy`
+
+  FOREIGN KEY (`soldBy` )
+
+  REFERENCES `ebay`.`person` (`userId` )
+
+  ON DELETE NO ACTION
+
+  ON UPDATE NO ACTION;
+

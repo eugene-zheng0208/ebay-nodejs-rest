@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie6" lang="en"><![endif]-->
+<!--[if IE 7 ]><html class="ie7" lang="en"><![endif]-->
+<!--[if IE 8 ]><html class="ie8" lang="en"><![endif]-->
+<!--[if IE 9 ]><html class="ie9" lang="en"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en">
+  <head>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+ $("#jqxExpander").jqxExpander({ width: '50%', height: '50%'});
+	var oGaugeInfo = {
+		sUrl : "http://sofe.ebay.com/ws/web/SojPagePerf?s_app_name=feedhome&cmdname=eBayTodayPage&s_qt=17176,16303,26908,25561,22834,27991,23696,25324,24799,26807,24778,26901,21288,17136,10192,22170,11576,26758,15529,19701,11639,27857,20771,20146,19696,22040,20998,17999,17502,25608,28224,28223,24694,28198,17547,19716,20331,23419,19689,8207,26985,26871,24658,19880,27520,18389,24011,25488,22190,18952,27181,24610,22653,16560,19671,21812,17119,22485,21590,19676,18861,27560,15235,27813,25589,14970,27463,11700,19566,27737,23245,28101,24668,22960,25295,25620,22332,28202,17739,27776,16228,19665,27963,11410,20669,27538,23241&st1=1417045084946&cxy=slc4b01c-33a2&s_env=production",
+		iST : (new Date()).getTime()
+	};
+</script>
+<script>
+	var oPageSiteSpeedInfo = {
+		iST : (new Date()).getTime()
+	};
+</script>
+<meta name="msvalidate.01" content="CB0919578198D18709307978949E1B72"></meta>
+<meta name="yandex-verification" content="6643aad5513535b7"></meta>
+<link rel="canonical" href="http://www.ebay.com"></link>
+<script type="application/ld+json">{"@context": "http://schema.org","@type": "WebSite","url": "http://www.ebay.com/", "potentialAction": {"@type": "SearchAction","target": "http://www.ebay.com/sch/i.html?_nkw={srch_str}&ssPageName=GSTL","query-input": "required name=srch_str"}}</script>
+
+<script type="text/javascript" src="/jqwidgets/jqxexpander.js"></script>
+
+<meta name="keywords"
+	content="ebay, electronics, cars, clothing, apparel, collectibles, sporting goods, digital cameras, antiques, tickets, jewelry, online shopping, auction, online auction"></meta>
+<meta name="google-site-verification"
+	content="8kHr3jd3Z43q1ovwo0KVgo_NZKIEMjthBxti8m8fYTg"></meta>
+<title>Electronics, Cars, Fashion, Collectibles, Coupons and
+	More | eBay</title>
+
+<meta name="description"
+	content="Buy and sell electronics, cars, fashion apparel, collectibles, sporting goods, digital cameras, baby items, coupons, and everything else on eBay, the world&apos;s online marketplace"></meta>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="viewport" content="width=1220">
+<link
+	href="http://ir.ebaystatic.com/rs/v/ntow0kxljmzqtfiydsegf2wiqia.css"
+	type="text/css" rel="stylesheet">
+<script> 
+</script> 
+
+    <title></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+<link rel="stylesheet" href="/styles/jqx.base.css" type="text/css" />
+ 
+	<% console.log(products);%>
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>  
+   <script type="text/javascript">
+        $(document).ready(function () {
+            // prepare the data
+			 $("#header").load("header"); 
+            var data = [
+               
+				<% 
+				var remaining=products.length;
+				for(i=0;i<products.length;i++)
+				{
+				if((i+3)<=products.length && (i+3)%3==0)
+					{
+					
+					var j=i+1;
+					var k=j+1;
+					
+				%>
+				 {
+					
+                    laptops:
+                    [
+						
+						 { img: '../../images/<%=products[i].productid%>.jpg', name:' <%=products[i].name%>', description: ' <%=products[i].description%>', price: ' <%=products[i].price%>'},
+						
+						
+						  { img: '../../images/<%=products[j].productid%>.jpg', name:' <%=products[j].name%>', description: ' <%=products[i].description%>', price:  ' <%=products[i].price%>'},
+						 
+						
+						   { img: '../../images/<%=products[k].productid%>.jpg', name:' <%=products[k].name%>', description: ' <%=products[i].description%>', price: ' <%=products[i].price%>'}
+						  
+                  
+                    ]
+					
+                }
+				<%
+				i+=1;
+				remaining=products.length-3;
+				}
+				
+				<!--else if( (i+3)%3==2)-->
+				else if( remaining==2)
+					{
+					
+					var j=i+1;
+					
+				%>
+				 {
+					
+                    laptops:
+                    [
+						
+						 { img: '../../images/<%=products[i].productid%>.jpg', name:' <%=products[i].name%>', description: ' <%=products[i].description%>', price: ' <%=products[i].price%>'},
+						
+						
+						  { img: '../../images/<%=products[j].productid%>.jpg', name:' <%=products[j].name%>', description: ' <%=products[i].description%>', price:  ' <%=products[i].price%>'}
+						 
+						
+						
+                  
+                    ]
+					
+                }
+				<%
+				i+=1;
+				}
+				
+				<!--else if( (i+3)%3==1)-->
+				else if( remaining==1)
+					{
+					
+				
+				%>
+					 {
+						
+						laptops:
+						[
+							
+							 { img: '../../images/<%=products[i].productid%>.jpg', name:' <%=products[i].name%>', description: ' <%=products[i].description%>', price: ' <%=products[i].price%>'}
+							
+							
+					  
+						]
+						
+					}
+				<%
+				}
+				i=i+1;
+				
+				if(i!=products.length-1){ %>
+				,
+				<% 
+				
+				}
+				
+				} %>
+               
+            ];
+			var dataProducts;
+		
+		  var source =
+            {
+                localData: data,
+                dataType: "json"
+            };
+            var dataAdapter = new $.jqx.dataAdapter(source);
+            var itemsInCart = 0;
+            $("#dataTable").jqxDataTable(
+            {
+                width: 940,
+                source: dataAdapter,
+                sortable: true,
+                pageable: true,
+                pageSize: 2,
+                pagerButtonsCount: 5,
+                enableHover: false,
+                selectionMode: 'none',
+                rendered: function () {
+                    $(".buy").jqxButton();
+                    $(".buy").click(function () {
+                        itemsInCart++;
+						
+                        $(".cart-top p").html(itemsInCart + " products");
+						location.href = "/product?pid=2";
+                    });
+                },
+                columns: [
+                      {
+                          text: 'Products', align: 'left', dataField: 'name',
+                          // row - row's index.
+                          // column - column's data field.
+                          // value - cell's value.
+                          // rowData - rendered row's object.
+                          cellsRenderer: function (row, column, value, rowData) {
+                              var laptops = rowData.laptops;
+                              var container = "<div>";
+                              for (var i = 0; i < laptops.length; i++) {
+                                  var laptop = laptops[i];
+                                  var item = "<div style='float: left; width: 310px; overflow: hidden; white-space: nowrap; height: 265px;'>";
+                                  var image = "<div style='margin: 5px; margin-bottom: 3px;'>";
+                                  var imgurl = laptop.img;
+                                  var img = '<img width=160 height=120 style="display: block;" src="' + imgurl + '"/>';
+                                  image += img;
+                                  image += "</div>";
+                                  var info = "<div style='margin: 5px; margin-left: 10px; margin-bottom: 3px;'>";
+                                  info += "<div><b><i>" + laptop.name + "</i></b></div>";
+                                  info += "<div>Price: $" + laptop.price + "</div>";
+                                 info += "<div>Description: " + laptop.description + "</div>";
+                                  info += "</div>";
+                                  var buy = "<button class='buy' style='margin: 5px; width: 100px; left: -40px; position: relative; margin-left: 50%; margin-bottom: 3px;'>Add To Cart</button>";
+                                  item += image;
+                                  item += info;
+                                  item += buy;
+                                  item += "</div>";
+                                  container += item;
+                              }
+                              container += "</div>";
+                              return container;
+                          }
+                      }
+                ]
+            });
+        });
+    </script>
+      <link rel="stylesheet" href="/jqwidgets/styles/jqx.base.css" type="text/css" />
+    <script type="text/javascript" src="/scripts/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdata.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxmenu.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdatatable.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxtabs.js"></script>
+    <script type="text/javascript" src="/scripts/demos.js"></script>
+
+	<style>
+        h4 {
+            font-size: 14px;
+            margin: 18px 0 15px 15px;
+        }
+        .tag-title-info {
+            background: transparent;
+            width: 1px;
+            height: 0px;
+            border-color: #4272b8 transparent #4272b8 #4272b8 !important;
+            border-width: 26px 26px;
+            border-style: solid;
+            z-index: 1000;
+            top: 0px;
+            position: absolute;
+            left: 598px;
+        }
+        .tag-title {
+            font-size: 16px;
+            color: #fff;
+            position: absolute;
+            z-index: 100;
+            left: 0;
+            line-height: 100%;
+            background: #4272b8 !important;
+            height: 52px;
+            padding: 0px;
+            margin: 0px;
+            top: 0px;
+            width: 500px;
+            vertical-align: middle;
+        }
+        .cart-top {
+            font-family: Arial, Helvetica, sans-serif;
+            height: 35px;
+            position: absolute;
+            left: 500px;
+            top: 0;
+            color: #fff;
+            padding: 16px 14px 1px 14px;
+            font-size: 11px;
+            font-weight: 400;
+            background: #4272b8 !important;
+            z-index: 199;
+        }
+            .cart-top p {
+                font-weight: bold;
+                font-size: 11px;
+                background: url(../../images/cart-icon.png) no-repeat right center;
+                min-height: 16px;
+                text-align: left;
+                padding: 0 24px 0 0;
+                margin-top: 2px;
+                float: left;
+                font-size: 11px;
+                color: #fff;
+                text-decoration: none;
+            }
+    </style>
+
+      
+
+  </head>
+  <body class="sz1200 index redux today stdln en_US rvi">
+
+  <div id="header" class="header"></div>
+<!--Remaining section-->
+<div id="footer"></div>
+    <div>
+        <div>
+           
+        </div>
+    </div>
+    </div>
+    <br />
+    <div style="margin-top: 60px;margin-left: 80px;" id="dataTable"></div>
+  
+  </body>
+</html>

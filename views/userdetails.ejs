@@ -1,0 +1,782 @@
+
+<!DOCTYPE HTML>
+<!-- Core JS Includes -->
+<html lang="en">
+<head>
+
+
+<link
+	href="http://ir.ebaystatic.com/z/2x/d0or22mqky33pisxmn0n0pga3.css?dataUri=true"
+	type="text/css" rel="stylesheet">
+<link
+	href="http://ir.ebaystatic.com/rs/v/f2jzqiu13i5htkgh3o5r1dsjuqq.css?proc=DU:N"
+	type="text/css" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/rating.css">
+<title><%=name%> on eBay</title>
+
+	
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>  
+  <script type="text/javascript">
+	jQuery(document).ready(function()
+	{
+	
+	
+	
+	$( window ).load(function() {
+		  refreshReviews();
+		});
+		
+		function refreshReviews(){
+	
+		jQuery.ajax({type:'GET',
+						 url:'/refreshReviews?userId=<%=sellerId%>',
+						 success:function(data,textStatus){								 												
+											if(data.results == "false"){
+
+												
+											}
+											else if(data.results == "true"){	
+											
+											console.log(data.reviews);
+											
+											Number.prototype.padLeft = function(base,chr)
+											{
+												var  len = (String(base || 10).length - String(this).length)+1;
+												return len > 0? new Array(len).join(chr || '0')+this : this;
+											}
+											
+											for(i = 0 ; i < data.reviews.length ; i++)
+											{										
+											jQuery('#reviewedBy'+i).html(data.reviews[i].userName);
+											jQuery('#review'+i).html(data.reviews[i].text);
+											var reviewDate = new Date(data.reviews[i].modifiedDate);
+											
+											reviewDate = [reviewDate.getFullYear(),(reviewDate.getMonth()+1).padLeft(),
+														  reviewDate.getDate().padLeft()
+															].join('/') +' ' +
+															[reviewDate.getHours().padLeft(),
+															 reviewDate.getMinutes().padLeft(),
+															 reviewDate.getSeconds().padLeft()].join(':');
+															 
+															 console.log(reviewDate);
+															 
+											jQuery('#reviewDate'+i).html(reviewDate);											
+											console.log(data.reviews[i].rating );
+											jQuery('#reviewStar'+i).html('');	
+											for(j = 0 ; j < data.reviews[i].rating ; j++)
+											{																		
+											jQuery('#reviewStar'+i).append('<li class="y">' + '</li>');								
+											}											
+											}
+											
+for(i = 0 ; i < data.latestReviews.length ; i++)
+											{											
+								var reviewDate = new Date(data.latestReviews[i].modifiedDate);
+								reviewDate = [reviewDate.getFullYear(),(reviewDate.getMonth()+1).padLeft(),
+								reviewDate.getDate().padLeft()
+															].join('/') +' ' +
+															[reviewDate.getHours().padLeft(),
+															 reviewDate.getMinutes().padLeft(),
+															 reviewDate.getSeconds().padLeft()].join(':');
+													
+							
+						jQuery('#rewComment'+i).html(data.latestReviews[i].text);	
+						jQuery('#rewDate'+i).html(reviewDate);							
+
+						}				
+											
+
+
+											
+											}
+									},
+						 error:function(XMLHttpRequest,textStatus,errorThrown){
+						 console.log('In error')
+						 }
+						 });		
+		}	
+jQuery('#addReview').click(function() {
+			
+			console.log('I m in post review')
+			 jQuery.ajax({type:'GET',
+						 url:'/checkLoggedInUser',
+						 success:function(data,textStatus){										 												
+											if(data == "false"){
+											window.location.replace("/SigninRedirect");											
+											}
+											else if(data == "true"){
+											
+											var review = jQuery('#newReviewField').val(); 	 
+											
+											if(review != null && review != "" && review != undefined)
+											{
+											
+											
+												var rating = jQuery('#rating').val();
+												
+												
+												 jQuery.ajax({type:'POST',
+											 url:'/postSellerReview',
+											 data: {sellerId : <%=originalSellerId%>,review: review , sellerPersonId : <%=sellerId%>, rating : rating } ,
+											 success:function(data,textStatus){						 												
+													if(data.result == "false"){
+													
+													console.log(data);
+													jQuery('#reviewAlert').html(data.message);
+													jQuery('#newReviewField').val(""); 
+													
+													}
+													else if(data.result == "true"){
+													refreshReviews();
+													console.log("Reivew posted");
+													jQuery('#newReviewField').val(""); 
+													
+													}	
+											},
+												error:function(XMLHttpRequest,textStatus,errorThrown){
+																jQuery('#reviewAlert').html("Oops something went wrong!!");
+																jQuery('#newReviewField').val(""); 
+														}
+												});			
+											}
+											else
+											{
+												jQuery('#reviewAlert').html("Please enter proper input");
+												jQuery('#newReviewField').val(""); 
+												 refreshReviews();
+											}
+											
+																			
+											}	
+										},
+						 error:function(XMLHttpRequest,textStatus,errorThrown){
+						 console.log('In error')
+						 }});
+			});
+	}); 
+	</script>
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript">
+</script>
+
+	
+</head>
+
+<body class="sz1200 no-touch">
+<div id="header"></div>
+<div class="gcbd page-container">
+		<h1 class="page_title_h1"><%=name%>'s profile</h1>
+		<div class="shr_wid">
+			<div class="eb:share" data-share=" " data-spid="2050430"
+				data-url="http://www.ebay.com/usr/it-bysmart"
+				data-destinations="email,facebook,twitter,pinterest"
+				data-language="en_US" data-title="it-bysmart on eBay"
+				data-email_body="Hi! Check out this profile on eBay and see their favorite sellers, their latest discoveries, and stuff they have for sale."
+				data-email_subject="I found an interesting member on eBay!"
+				data-tweet="Check out it-bysmart's profile on @eBay, and see their favorite finds and more:">
+			</div>
+		</div>
+
+		<script>
+			(function(d) {
+				var js, id = 'ebay-scShare';
+				if (d.getElementById(id)) {
+					return;
+				}
+				js = d.createElement('script');
+				js.id = id;
+				js.async = true;
+				js.defer = true;
+				js.src = "http://ir.ebaystatic.com/rs/v/2kgfdz0qpu52zpqqpjhgx35xjqf.js";
+				d.getElementsByTagName('head')[0].appendChild(js);
+			}(document));
+		</script>
+		<div id="cover_image" class="cvrimg media sz1200" sectionId="1000">
+
+			<div id="cover_wrapper">
+				<img id="cover_handler" class="cov_img img"
+					data-src="http://p.ebaystatic.com/aw/social/profile_coverimg_wood.jpg"
+					style="top: 0px;" alt="cover image" />
+			</div>
+
+		</div>
+		<div starty="0px" userLoggedIn="true" id="dummy_cover_img"
+			src="http://p.ebaystatic.com/aw/social/profile_coverimg_wood.jpg"></div>
+		<div id="index_card" class="sz1200 idx_crd">
+			<div class="shad"></div>
+			<div id="user_image" class="usrimg media" sectionId="998">
+				<div class="icon">
+					<a class="icons edit_icn pen upld" href="javascript:;" title="Edit">
+						<form target="msa_frame" class="eps_upload" name="eps_upload"
+							method="post" action="/usr/it-bysmart/edit/uploadpic"
+							enctype="multipart/form-data">
+							<input class="imgbin" sectionId="998" name="imgbin" type="file"
+								onchange="" accept="image/*" size="1" />
+						</form>
+					</a> <a class="icons edit_icn pen noUpld" href="javascript:;"
+						title="Edit"></a> <span class="cll">
+					</span>
+
+					
+				
+
+
+										<div class="img_ldr">
+						<div class="thr_mask"></div>
+						<div class="throbr">
+							
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div id="user_info" class="usrinfo">
+				<div class="mbg" role="application">
+					<span class="mbg-l" role="presentation"> <a class="mbg-id"
+						title="<%=name%>"><%=name%></a>
+						(<a
+						href=""
+						aria-labelledby="it-bysmart's feedback score is 13171"
+						title="it-bysmart's feedback score is 13171"></a><i
+						class="gspr yellowShoot star" role="img" tabIndex="0"
+						title="it-bysmart's feedback score is 13171"> </i>)
+					</span><span class="mbg-l" role="presentation"> </span>
+
+
+				</div>
+			
+			</div>
+			<div id="shortcuts" class="shrtct fr">
+				<span class="store each fl"> <a
+					href=""
+					title="Items for sale" _sp="p2050430.m2531.l4586"><span
+						class="icons soi fl"></span></a> <span class="soi_lk fl"><a
+						href="http://www.ebay.com/sch/it-bysmart/m.html?_nkw=&_armrs=1&_ipg=&_from="
+						title="Items for sale" _sp="p2050430.m2531.l4586">Items for
+							sale</a></span>
+				</span> 
+			</div>
+			<div id="user_bio" class="usrbio">
+				<div class="show_value">
+					<a class="icons pen edit_icn" href="javascript:;" title="Edit"></a>
+					<div class="cntnt">
+						<h2 class="bio inline_value">
+							<%=name%> has been an eBay member since <%=regDate%></h2>
+						
+					</div>
+				</div>
+				<div class="inline_edit hide">
+					<div class="dialog hide error_message" tabindex="-1" role="dialog"
+						aria-labelledby="error_message" aria-hidden="true">
+						<div class="sm-co sm-er">
+							<i class="gspr icer"></i>
+							<p>
+								<span id="saveCancelChanges" class="err hide">Please save
+									or cancel your changes.</span> <span id="serviceFailureText"
+									class="err hide">There was an unexpected service
+									failure. Please try again.</span> <span id="signInErrorText"
+									class="err hide">Please sign in to make changes.</span> <span
+									class="clr"> <a href="javascript:void(0);"
+									class="rmv_cancel rmv_btn btn btn-ter btn-m fr">OK</a>
+								</span>
+							</p>
+						</div>
+					</div>
+
+
+					
+					<span
+						class="char_rem fr"
+						contentString='&lt;span&gt;n&lt;/span&gt; characters left (No HTML please)'></span>
+					<span class="single_char_rem fr"
+						contentString='&lt;span&gt;1&lt;/span&gt; character left (No HTML please)'></span>
+				</div>
+			</div>
+			<div class="shim"></div>
+			<div id="user_feedback" class="usrfedbk">
+
+				<div class="fb_title">
+					<span class="ttl fl bold">Feedback ratings</span> <a
+						href="http://pages.ebay.com/help/feedback/howitworks.html"
+						title="Click here to learn more about user feedback"><span
+						class="icons question fl"></span></a> <span class="all_fb fr"><a
+						href="http://feedback.ebay.com/ws/eBayISAPI.dll?ViewFeedback2&userid=it-bysmart&ftab=AllFeedback&myworld=true&rt=nc"
+						_sp="p2050430.m2536.l4585" title="See all feedback"></a></span>
+				</div>
+
+				<div class="cf"></div>
+
+			
+				
+				<div class="fb_dtls">
+					<div id="dsr" class="dsr fl col-3">
+						<div class="fl each">
+							<span class="gspr icfdg rating_star"><span id="full_star"
+								class="gspr icfdy rating_ov" title="4.9 / 5.0"></span></span> <span
+								class="gspr icfdg rating_star"><span id="full_star"
+								class="gspr icfdy rating_ov" title="4.9 / 5.0"></span></span> 
+								<span
+								class="gspr icfdg rating_star"><span id="full_star"
+								class="gspr icfdy rating_ov" title="4.9 / 5.0"></span></span> <span
+								class="gspr icfdg rating_star"><span id="full_star"
+								class="gspr icfdy rating_ov" title="4.9 / 5.0"></span></span> <span
+								class="gspr icfdg rating_star"><span id="part_star9"
+								class="gspr icfdy rating_ov" title="4.9 / 5.0"></span></span> <span
+								class="dsr_count bold fl"><%=avgReview%></span> <span class="dsr_type">Avg. Reviews</span>
+						</div>
+
+						<div class="clearfloat"></div>
+						
+
+						<div class="clearfloat"></div>
+						
+						<div class="clearfloat"></div>
+						
+						<div class="clearfloat"></div>
+					</div>
+					
+					<div class="dot_crsl fb_cmnts  col-3" id="feedback_comments">
+						<div id="revw" class="itm_ctr">
+							<ul id="latestReviews">
+							<% for (i=0; i < latestReviews.length ; i++ ) {%>
+							 <li>
+							 <div class="each_cmmt">
+							 <span class="icons fb_positive"></span>
+							 <div class="fb_dtls"><div id="rewComment<%=i%>" class="fb_cmmt"></div>
+							 <div class="itm_ttl">
+							 <span id="rewDate<%=i%>" class=""></span>
+							 </div>
+							 </div>
+							 </div>
+							 </li>
+							<%}%>
+							</ul>
+						</div>
+
+						<div class="dots_ctr">
+							<div class="dots"></div>
+						</div>
+						
+
+					</div>
+
+				</div>
+			</div>
+			<div id="member_info" class="mem_info">
+
+				 <span> <span
+					class="hide countElem"
+					><%=reviewCount%> Reviews</span>
+				</span> <span class="pipe">|</span> <span> <span>Member
+						since: </span> <span class="info"><%=regDate%></span>
+				</span> 
+			</div>			
+			<iframe title="Picture"
+				style="height: 800px; width: 800px; display: none" src="about:blank"
+				id="msa_frame" name="msa_frame"> </iframe>
+		</div>
+		<div class="rvws">
+			<h2>Reviews</h2>
+			<div class="by">for <%=name%></div>
+			<br>
+			<br>
+			<br>
+			
+				<div>
+				<h3>Leave your feedback</h3><br><SELECT id="rating" NAME="rating" >
+
+
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+
+
+
+							</SELECT><br>
+				<textArea style="resize: none; border: 2px solid #cccccc;"
+			placeholder="enter your review here" name="newReviewField" rows="8" cols="80"
+			id="newReviewField"></textArea>
+				
+  
+				</div>
+					<div class="fol-widget" id="w1-2" data-entity-type="person" margin="-20">
+					<button id="addReview" class="btn btn-g btn-m ">
+						<span></span> <span>Add Review</span>
+					</button>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+					 <span id="reviewAlert"></span>
+				</div>
+				
+			<% for (i=0; i < reviews.length ; i++ ) {%>	
+				
+				
+			<div class="rvw last">
+				<div>
+					
+					<span id="reviewedBy<%=i%>"></span> <div> <span  id="reviewDate<%=i%>">
+					
+					</span> </div>
+					
+				</div>
+				<div class="score">
+					<ul id="reviewStar<%=i%>" class="star">
+				
+					</ul>
+					
+				</div>
+				<div class="ctnt">
+					
+					<div id="review<%=i%>" class="sumy"></div>
+				</div>
+				<div class="clr"></div>
+			</div>
+				<%}%>
+		</div>
+		
+	</div>
+	
+	<!--RcmdId Social_MyWorldProfile,RlogId t6n%7Cqhqib%3D9vjd7g66%60%28b1%3A%60-14a223ca5c5-0x1711 -->
+	<footer class="gsft">
+		<div id="glbfooter" class="gh-w gh-flex">
+			<div>
+				<div id=rtm_html_1650></div>
+				<div id=rtm_html_1651></div>
+			</div>
+			<h2 class=gh-ar-hdn>Additional site navigation</h2>
+			<div id="gf-t-box">
+				<table class="gf-t">
+					<tr>
+						<td colspan=2><ul id="gf-l">
+								<li class="gf-li"><a href="http://community.ebay.com"
+									_exsp=m571.l3329 class="thrd gf-bar-a">Community</a></li>
+								<li class="gf-li"><a href="http://www.ebayinc.com"
+									_exsp=m571.l2602 class="thrd gf-bar-a">About eBay</a></li>
+								<li class="gf-li"><a href="http://announcements.ebay.com"
+									_sp=m571.l3330 class="thrd gf-bar-a">Announcements</a></li>
+								<li class="gf-li"><a
+									href="http://pages.ebay.com/securitycenter/index.html"
+									_sp=m571.l2616 class="thrd gf-bar-a">Security Center</a></li>
+								<li class="gf-li"><a
+									href="http://resolutioncenter.ebay.com/" _sp=m571.l1619
+									class="thrd gf-bar-a">Resolution Center</a></li>
+								<li class="gf-li"><a
+									href="http://pages.ebay.com/sellerinformation/index.html"
+									_sp=m571.l1613 class="thrd gf-bar-a">Seller Information
+										Center</a></li>
+								<li class="gf-li"><a
+									href="http://pages.ebay.com/help/policies/overview.html"
+									_sp=m571.l2604 class="thrd gf-bar-a">Policies</a></li>
+								<li class="gf-li"><a
+									href="http://pages.ebay.com/sitemap.html" _sp=m571.l1625
+									class="thrd gf-bar-a">Site Map</a></li>
+								<li class="gf-li"><a
+									href="http://viv.ebay.com/ws/eBayISAPI.dll?EbayTime"
+									_sp=m571.l2606 class="thrd gf-bar-a">eBay official time</a></li>
+								<li class="gf-li"><a href="http://garden.ebay.com"
+									_sp=m571.l1617 class="thrd gf-bar-a">Preview new
+										features</a></li>
+								<li class="gf-li"><a
+									href="http://ocsnext.ebay.com/ocs/cuhome" _sp=m571.l2911
+									class="thrd gf-bar-a">Contact us</a></li>
+								<li class="gf-li"><a
+									href="http://qu.ebay.com/survey?srvName=globalheader+%28footer-US%29"
+									_sp=m571.l2628 class="thrd gh-survey gf-bar-a"
+									title="opens in a new window or tab">Tell us what you
+										think</a></li>
+							</ul></td>
+					</tr>
+					
+					<tr valign="top">
+						<td class="gf-legal">Copyright © 1995-2014 eBay Inc. All
+							Rights Reserved. <a
+							href="http://pages.ebay.com/help/policies/user-agreement.html?rt=nc">User
+								Agreement</a>, <a
+							href="http://pages.ebay.com/help/policies/privacy-policy.html?rt=nc">Privacy</a>
+							and <a
+							href="http://pages.ebay.com/help/account/cookies-web-beacons.html">Cookies</a>.
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!--ts:2014.12.06.00:01-->
+		<!--rq:-->
+		<!--rvr:59rc5-->
+	</footer>
+	<script
+		src="http://ir.ebaystatic.com/z/y2/plk0ya3fry3wzdssoliebtzrq.js"
+		type="text/javascript"></script>
+	<script
+		src="http://ir.ebaystatic.com/rs/v/4eldz5lcsm4vvopf3bf53jpggiu.js"
+		type="text/javascript"></script>
+	<script type="text/javascript">
+		(function() {
+			var Context = raptor.require('ebay.context.Context');
+			Context.call(Context, {
+				"site" : 0,
+				"errors" : {
+					"enabled" : false
+				},
+				"app" : "myworld",
+				"domain" : ".ebay.com",
+				"pool" : "production",
+				"cobrand" : 2,
+				"locale" : "en_US_MAIN",
+				"features" : {},
+				"pid" : 2050430
+			});
+		})();
+
+		(function() {
+			var Context = raptor.require('ebay.context.Context');
+			Context.call(Context, {
+				"site" : 0,
+				"errors" : {
+					"enabled" : false
+				},
+				"app" : "myworld",
+				"domain" : ".ebay.com",
+				"cobrand" : 2,
+				"pool" : "production",
+				"locale" : "en_US_MAIN",
+				"features" : {},
+				"pid" : 2050430
+			});
+		})();
+		GH_spacerImg = "http://ir.ebaystatic.com/pictures/aw/pics/s.gif";
+		if (typeof GHJSLoaded === "undefined") {
+			!function() {
+				var imgObj, roverURL = "http://rover.ebay.com";
+				if (document.location.protocol == "https:") {
+					roverURL = roverURL.replace(/^http/, "https");
+				}
+				if (document.body != null) {
+					imgObj = document.createElement("img");
+					imgObj.src = roverURL
+							+ "/roverimp/0/0/9?imp=2046301&trknvp=ghi%3D91"
+							+ "%26gh1g%3D"
+							+ encodeURIComponent(document.location.href)
+							+ "%26gh2g%3D "
+							+ encodeURIComponent(navigator.userAgent) + "&"
+							+ (new Date()).getTime();
+					document.body.appendChild(imgObj);
+				}
+			}();
+		}
+		if (typeof GH != "undefined" && GH) {
+			GH.urls = {
+				autocomplete_js : "http://ir.ebaystatic.com/f/gx1od3zdei121fkdjg2mqzahqyl.js",
+				ac_rtm : "http://srx.main.ebayrtm.com/rtm?RtmCmd&a=json&uf=0&e=USC:2&z=11&enc=UTF-8&v=5&rnc=1&_vrdm=1358451349580&p=19320&cb=GH_ac_rtm",
+				mFtrLnk : "http://ir.ebaystatic.com/f/logwisyb5e5yddn4zmlg5mnhbab.js",
+				qanewalerts_endpoint : 0
+			};
+			GH.GHSW = {
+				recogoff : 0,
+				jsdebug : 0,
+				raptor : "true",
+				catService : 0,
+				sandbox : 0,
+				emp : 0,
+				no_akamai_autocomplt : "true",
+				ac1 : 0,
+				ac2 : 0,
+				ac3 : 0,
+				ac4 : 0,
+				AUTOCOMPLETE_HELP : 0,
+				nodoodleon980 : 0,
+				rtmftr : 0,
+				actVer : 0,
+				actDebug : 0,
+				alerts : 0,
+				alertsOff : 0,
+				hideMobile : 0,
+				survey : 0,
+				telDE : 0,
+				langSwitch : 0,
+				pool : 0,
+				SHOW_MYCOLL : "true"
+			};
+		}
+		if (typeof GH != "undefined" && GH) {
+			GH_config = {
+				"siteId" : "0",
+				"geoLang" : "[]",
+				sin : 1,
+				pageId : 2050430,
+				ct : 0
+			};
+			GH.init();
+		}
+		$rset(
+				'loaderMeta',
+				{
+					"ete.tours.ui.tooltip" : {
+						"requires" : [ "ete.tours.ui.element",
+								"ete.tours.ui.cue-overlay",
+								"ete.tours.ui.cue-bubble",
+								"ete.tours.ui.spotlight" ],
+						"js" : [ "http://ir.ebaystatic.com/z/mm/l32tdqruu24oxgxzkohr5ib4o.js" ]
+					},
+					"raptor/listeners" : {},
+					"raptor/pubsub" : {},
+					"ete.tours.ui.trigger" : {
+						"requires" : [ "raptor-legacy", "raptor/logging",
+								"ete.tours.ui.tray", "ebayUI.overlay" ],
+						"js" : [ "http://ir.ebaystatic.com/z/qh/lyhgu2s02i1jtpx4aiws4mijv.js" ],
+						"css" : [ "http://ir.ebaystatic.com/z/yd/tqyand3q5u4f1kho0plqjunn2.css?dataUri=true" ]
+					},
+					"ete.tours.ui.spotlight" : {
+						"js" : [ "http://ir.ebaystatic.com/z/ir/fpfj20lvty1pnluz2igbxu0th.js" ],
+						"css" : [ "http://ir.ebaystatic.com/z/al/ukz43pumiu3wxpbadtlnthqg4.css?dataUri=true" ]
+					},
+					"ete.tours.ui.element" : {
+						"js" : [ "http://ir.ebaystatic.com/z/i3/ghsnqy5wea0dng2btpykivfvp.js" ],
+						"css" : [ "http://ir.ebaystatic.com/z/i2/lqhorio1xeykrb2qouo3hcqf2.css?dataUri=true" ]
+					},
+					"ebayUI.button" : {
+						"requires" : [ "raptor/templating",
+								"ebay.UIComponentsResource.button",
+								"raptor/listeners" ]
+					},
+					"ete.tours.ui.tracking" : {
+						"requires" : [ "raptor/logging" ],
+						"js" : [ "http://ir.ebaystatic.com/z/e5/5jpxmjyck25pxg4cqswi10djc.js" ]
+					},
+					"ebayUI.bubble" : {
+						"requires" : [ "ebayUI.overlay" ]
+					},
+					"raptor/templating" : {
+						"requires" : [ "raptor/render-context",
+								"raptor/strings", "raptor/xml/utils" ]
+					},
+					"ete.tours.ui.page" : {
+						"js" : [ "http://ir.ebaystatic.com/z/am/wjvf1zs5o23dffharge35kzah.js" ]
+					},
+					"raptor/render-context" : {
+						"requires" : [ "raptor/strings", "raptor/xml/utils" ]
+					},
+					"raptor/logging" : {},
+					"ete.tours.ui.pointer" : {
+						"requires" : [ "raptor/listeners",
+								"ete.tours.ui.element" ],
+						"js" : [ "http://ir.ebaystatic.com/z/yi/sjqbjuugfy5ktag1inwxx5ul0.js" ],
+						"css" : [ "http://ir.ebaystatic.com/z/uq/m1z1jvn2a2ycvdny5vsmppqiw.css?dataUri=true" ]
+					},
+					"ebayUI.overlay" : {
+						"requires" : [ "ebayUI.transitions", "ebayUI.button",
+								"raptor/listeners", "ebayUI.dragger" ]
+					},
+					"ete.tours.ui.tray" : {
+						"requires" : [ "raptor.listeners", "ebayUI.button" ],
+						"js" : [ "http://ir.ebaystatic.com/z/ul/3vf0oyak3a1nrdbcjgkxk4laq.js" ],
+						"css" : [ "http://ir.ebaystatic.com/z/qa/p5ow0cve0mzzhmmtvpiltorud.css?dataUri=true" ]
+					},
+					"ebay.UIComponentsResource.button.dropdown" : {},
+					"ebayUI.transitions" : {},
+					"ebay.UIComponentsResource.button" : {
+						"requires" : [ "ebay.UIComponentsResource.button.dropdown" ]
+					},
+					"ete.tours.ui.overlay-fader-mixin" : {
+						"js" : [ "http://ir.ebaystatic.com/z/qg/tmoy4pvw32ycdk25e3umueat3.js" ]
+					},
+					"ete.tours.ui.cue-bubble" : {
+						"requires" : [ "ebayUI.button", "ete.tours.ui.bubble" ],
+						"js" : [ "http://ir.ebaystatic.com/z/yy/zczmtw4wt2z2hdrw10mkwdeed.js" ],
+						"css" : [ "http://ir.ebaystatic.com/z/2y/xhlbf1yeqqyzte1evbi2v430m.css?dataUri=true" ]
+					},
+					"ete.tours.ui.storage-writer" : {
+						"requires" : [ "raptor/logging" ],
+						"js" : [ "http://ir.ebaystatic.com/z/ye/gsdzv4wtne02damgzbz3tlsj2.js" ]
+					},
+					"raptor.listeners" : {},
+					"raptor/xml/utils" : {},
+					"raptor-legacy" : {},
+					"ete.tours.ui.cue-overlay" : {
+						"requires" : [ "ebayUI.button", "ete.tours.ui.overlay" ],
+						"js" : [ "http://ir.ebaystatic.com/z/u5/klxsipnma24hvn0xjgvrfeddu.js" ],
+						"css" : [ "http://ir.ebaystatic.com/z/ix/wbz2otgjcqzcdm5nw1le0ei3v.css?dataUri=true" ]
+					},
+					"ebayUI.dragger" : {},
+					"ete.tours.ui.tour-runner" : {
+						"requires" : [ "raptor-legacy", "raptor/logging",
+								"raptor/pubsub", "raptor/listeners",
+								"ete.tours.ui.storage-writer",
+								"ete.tours.ui.tracking",
+								"ete.tours.ui.commandable-mixin",
+								"ete.tours.ui.overlay-fader-mixin",
+								"ete.tours.ui.trigger", "ete.tours.ui.tooltip",
+								"ete.tours.ui.pointer", "ete.tours.ui.page",
+								"ete.tours.ui.element" ],
+						"js" : [ "http://ir.ebaystatic.com/z/qd/rdm1ixcceizjtaixbotjhasse.js" ],
+						"css" : [ "http://ir.ebaystatic.com/z/a2/zfcosh1k2u0exmye2egkffeve.css?dataUri=true" ]
+					},
+					"raptor/strings" : {},
+					"ete.tours.ui.bubble" : {
+						"requires" : [ "raptor-legacy", "ebayUI.button",
+								"ebayUI.bubble" ],
+						"js" : [ "http://ir.ebaystatic.com/z/ay/jjxwc4tiym03tm4wncnlib0kh.js" ],
+						"css" : [ "http://ir.ebaystatic.com/z/a3/vw451ctpdqyzdevl5iv4txvyl.css?dataUri=true" ]
+					},
+					"ete.tours.ui.overlay" : {
+						"requires" : [ "raptor-legacy", "ebayUI.button",
+								"ebayUI.overlay" ],
+						"js" : [ "http://ir.ebaystatic.com/z/mv/vvxtla0fp2za3bg5bxbptea2u.js" ],
+						"css" : [ "http://ir.ebaystatic.com/z/y1/lct1b5f3lm0plchvpztkl4hsl.css?dataUri=true" ]
+					},
+					"ete.tours.ui.commandable-mixin" : {
+						"js" : [ "http://ir.ebaystatic.com/z/e0/4dgycndui22jfanhpiskfpxuw.js" ]
+					},
+					"ete/tours/ui" : {
+						"requires" : [ "ete.tours.ui.tour-runner" ]
+					}
+				});
+		$rwidgets(
+				
+				
+				[ 'component/index_card/feedback_comments', 'w1-3' ],
+				[ 'component/index_card/member_info', 'w1-4' ],
+				[ 'modules/following', 'w1-5' ],
+				[
+						'fluid/guideviewer/widget',
+						'w1-6',
+						{
+							"readmore_url" : "http:\u002F\u002Fwww.ebay.com\u002Fgds\u002F10-Ways-to-Make-your-laptop-battery-last-longer-\u002F10000000176576322\u002Fg.html",
+							"version" : "v1"
+						} ],
+				[
+						'fluid/guideviewer/widget',
+						'w1-7',
+						{
+							"readmore_url" : "http:\u002F\u002Fwww.ebay.com\u002Fgds\u002FHow-to-improve-your-notebooks-battery-life-\u002F10000000015985318\u002Fg.html",
+							"version" : "v1"
+						} ],
+				[
+						'fluid/guideviewer/widget',
+						'w1-8',
+						{
+							"readmore_url" : "http:\u002F\u002Fwww.ebay.com\u002Fgds\u002FWhat-does-feedback-do-for-me-and-you-\u002F10000000075134533\u002Fg.html",
+							"version" : "v1"
+						} ],
+				[
+						'fluid/guideviewer/widget',
+						'w1-9',
+						{
+							"readmore_url" : "http:\u002F\u002Fwww.ebay.com\u002Fgds\u002FHow-do-I-make-sure-my-item-is-properly-packaged-\u002F10000000076301090\u002Fg.html",
+							"version" : "v1"
+						} ]);
+		new (raptor.require('raptor.tracking.core.Tracker'))({
+			"psi" : "APKWbAAE*",
+			"rover" : {
+				"imp" : "/roverimp/0/0/9",
+				"clk" : "/roverclk/0/0/9",
+				"uri" : "http://rover.ebay.com"
+			},
+			"pid" : "p2050430"
+		});
+		raptor.require('raptor.tracking.idmap.IdMap').roverService(
+				"http://rover.ebay.com/idmap/0?footer");
+	</script>
+	<script type="text/javascript">$.support.cors = true;</script>
+	<!-- <script type="text/javascript" src="http://ir.ebaystatic.com/z/iz/ujo1cva5em04nlx2lvzkjtgmo.js"></script> -->
+</body>
+</html>

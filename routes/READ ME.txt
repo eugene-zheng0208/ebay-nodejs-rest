@@ -1,0 +1,3 @@
+1) mysql.js - without connection pooling 
+2) mysql3.js - with reddis
+3) mysql2.js- with connection pooling 

@@ -1,0 +1,83 @@
+<html>
+<head>
+
+ <script type="text/javascript" src="/scripts/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript">
+ $(function(){
+ alert('in here');
+  $("#jqxNotification").jqxNotification({ width: "auto", position: "top-right", opacity: 0.9,
+                closeOnClick: true, autoClose: false, showCloseButton: true, template: "mail", blink: true
+            });
+	$("#click").click(function () {
+
+			    var url;
+			 
+               
+
+                    console.log('in else');
+                    url='/addToCart?productid=1&qty=1';
+                  var pid=$('#productid').val();
+				  alert(pid);
+                         $.ajax({
+                type: 'GET',
+
+                    contentType: 'application/json',
+                            url: '/addToCart?productid='+pid+'&qty=1',
+                            success: function(data) {
+                                console.log('success');
+                            console.log(data);
+							if(data.length>0)
+                                {
+                                    $("#jqxNotification").jqxNotification("open");
+
+
+                                }
+                          
+                        }
+                        });
+
+                    // $("#popupWindowNewSubcat").jqxWindow('hide');
+
+
+            });
+
+			});
+			</script>
+			<script type="text/javascript" src="/jqwidgets/jqxcore.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxdata.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxbuttons.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxscrollbar.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxmenu.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.pager.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.selection.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxnumberinput.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxwindow.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxlistbox.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxdropdownlist.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxinput.js"></script>
+        <script type="text/javascript" src="/scripts/demos.js"></script>
+        <script type="text/javascript" src="/generatedata.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.columnsresize.js"></script>
+        <script type="text/javascript" src="../../jqwidgets/jqxswitchbutton.js"></script>
+        <script type="text/javascript" src="../../jqwidgets/jqxcheckbox.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxnotification.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxpanel.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdatatable.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxtabs.js"></script>
+	 <link rel='stylesheet' href='/stylesheets/style.css' />
+<link rel="stylesheet" href="/styles/jqx.base.css" type="text/css" />
+</head>
+<body>
+<input type="text" id="productid" ></input>
+<input type="button" name="click" id="click">click</input>
+<div id='jqxWidget'>
+    <div id="jqxNotification">
+                          <div>
+                              Item added to cart.</div>
+                        <!--  <div style="font-size: smaller; text-align: center;">
+                              Click to view.</div>-->
+                     </div> </div>
+</body>
+
+</html>

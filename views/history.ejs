@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <title></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+<link rel="stylesheet" href="/styles/jqx.base.css" type="text/css" />
+   <script src="/scripts/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript">
+
+
+   
+            $(function(){
+               var userData,productData;
+			   $("#header").load("header");
+
+				 $('#jqxTabs').jqxTabs({ width: 420, height: 150, position: 'top', theme: 'classic' });
+            //initializing jqxPanel
+            $('.panel').jqxPanel({ height: 500, width: 1000, autoUpdate: true, theme: 'classic' });
+
+              $('#jqxTabs').jqxTabs({ height: '100%', width: '100%' });
+
+				 var cellsrenderer = function (row, columnfield, value, defaulthtml, columnproperties) {
+               if(value==1)
+			   return 'Auction';
+			   else
+			   return 'Fixed Price';
+            }
+			
+            // prepare the data
+            var sourcePurchaseProducts =
+            {
+                datatype: "json",
+                dataFields: [
+                     { name: 'name', type: 'string' },
+                     { name: 'description', type: 'string' },
+                     { name: 'price', type: 'string' },
+                     { name: 'isAuction', type: 'string' },
+                     { name: 'quantity', type: 'string' }
+
+                ],
+                url: '/getPurchasedProducts?userid=5',
+              //  root: 'DATA',
+              //  record: 'ROW'
+            };
+
+            //prepare product data
+			
+            var sourceSoldProducts =
+            {
+                datatype: "json",
+                dataFields: [
+                    { name: 'name', type: 'string' },
+                     { name: 'description', type: 'string' },
+                     { name: 'price', type: 'string' },
+                     { name: 'quantity', type: 'string' },
+                     { name: 'status', type: 'string' }
+
+                ],
+                url: '/getSoldProducts?userid=1',
+              //  root: 'DATA',
+              //  record: 'ROW'
+            };
+
+            console.log('source 2');
+            
+            var dataAdapter1 = new $.jqx.dataAdapter(sourcePurchaseProducts, {
+                loadComplete: function () {
+                    // data is loaded.
+                }
+            });
+            var dataAdapter2 = new $.jqx.dataAdapter(sourceSoldProducts, {
+                loadComplete: function () {
+                    // data is loaded.
+                }
+            });
+            console.log("adapter");
+            console.log(dataAdapter2);
+      
+              var renderer2=function(id)
+              {
+                var status;
+              //  console.log(userData);
+                if(userData[id].isactive==1)
+                  status="Disable";
+                  else
+                    status="Enable";
+                return '<input type="button" id=uid'+id+' value='+status+' style="color:blue"  onclick="toggle(this,'+id+');">';
+              }
+            // create jqxDataTable.
+			
+            $("#table").jqxDataTable(
+            {
+                source: dataAdapter1,
+                pageable: true,
+                pagerButtonsCount: 10,
+                altRows: true,
+                filterable: true,
+                height: 400,
+                filtermode: 'simple',
+                width:910,
+                columns: [
+                  { text: 'Name', cellsAlign: 'center', align: 'center', dataField: 'name', width: 150 },
+                  { text: 'Description', columngroup: 'ProductDetails', cellsAlign: 'center', align: 'center', dataField: 'description', width:200  },
+                  { text: 'Price', columngroup: 'ProductDetails', dataField: 'price', cellsformat: 'd', cellsAlign: 'center', align: 'center', width:150 },
+                  { text: 'Auction or Fixed Price', columngroup: 'ProductDetails', dataField: 'isAuction', cellsformat: 'c2', align: 'center', cellsAlign: 'center', cellsrenderer: cellsrenderer , width: 180 },
+                  { text: 'Quantity', columngroup: 'Location', cellsAlign: 'center', align: 'center', dataField: 'quantity', width: 150 }
+                ]
+            });
+
+                var renderer2Product=function(id)
+                {
+                  var status;
+                  if(productData[id].isactive==1)
+                    status="Disable";
+                    else
+                      status="Enable";
+                  return '<input type="button" id=pid'+id+' value='+status+' style="color:blue"  onclick="toggle2(this,'+id+');">';
+                }
+             
+			 $("#table2").jqxDataTable(
+              {
+                  source: dataAdapter2,
+                  pageable: true,
+                  pagerButtonsCount: 10,
+                  altRows: true,
+                  filterable: true,
+                  height: 400,
+                  filtermode: 'simple',
+                  width:910,
+                  columns: [
+                    { text: 'Name', cellsAlign: 'center', align: 'center', dataField: 'name', width: 150 },
+                  { text: 'Description', columngroup: 'ProductDetails', cellsAlign: 'center', align: 'center', dataField: 'description', width:250 },
+                  { text: 'Price', columngroup: 'ProductDetails', dataField: 'price', cellsformat: 'd', cellsAlign: 'center', align: 'center', width:150 },
+                  { text: 'Quantity', columngroup: 'ProductDetails', dataField: 'isAuction', cellsformat: 'c2', align: 'center', cellsAlign: 'center', width: 150 },
+                  { text: 'Status', columngroup: 'Location', cellsAlign: 'center', align: 'center', dataField: 'status', width: 150 }
+                  ]
+              });
+
+
+
+
+
+			  
+			  //---------------end of seller listing 
+			  
+			  /////---------------------------auction listing
+			  
+ 
+			  
+			  ///- end of auction listing 
+			  
+
+
+
+            });
+        </script>
+
+        <script type="text/javascript" src="/scripts/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxcore.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxdata.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxbuttons.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxscrollbar.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxmenu.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.pager.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.selection.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxnumberinput.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxwindow.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxlistbox.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxdropdownlist.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxinput.js"></script>
+        <script type="text/javascript" src="/scripts/demos.js"></script>
+        <script type="text/javascript" src="/generatedata.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxgrid.columnsresize.js"></script>
+        <script type="text/javascript" src="../../jqwidgets/jqxswitchbutton.js"></script>
+        <script type="text/javascript" src="../../jqwidgets/jqxcheckbox.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxnotification.js"></script>
+        <script type="text/javascript" src="/jqwidgets/jqxpanel.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxdatatable.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqxtabs.js"></script>
+
+
+
+
+
+  </head>
+  <body>
+
+
+<div>
+<div id="header">
+
+</div>
+<div id='jqxWidget' style="margin-left:50px">
+<h1> History:</h1>
+   <div id='jqxTabs'>
+        <ul style='margin-left: 30px;'>
+            <li>Purchased Products</li>
+            <li>Sold Products</li>
+         
+        </ul>
+        <div>
+<div id="panel2" class="panel">
+              <div id="table">
+                   </div>        
+</div>
+       </div>
+	   <div>
+		<div id="panel2" class="panel">
+          <div id="table2">
+                   </div>
+        </div>
+		</div>
+      
+			
+        </div>
+    </div>
+		</div>
+
+
+
+  </body>
+</html>

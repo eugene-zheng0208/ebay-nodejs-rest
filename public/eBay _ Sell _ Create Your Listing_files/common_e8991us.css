@@ -1,0 +1,68 @@
+#gh { display:none; }
+#gnheader { display:none; }
+body { font-family:arial,sans-serif;font-size:small; }
+form { margin:0;padding:0; }
+a,a:link,a:visited,a:active { color:#1a4dc1;text-decoration:none; }
+a:hover { color:#1a4dc1;text-decoration:underline; }
+th { font-weight:normal;text-align:left; }
+.clear { clear:both; }
+.fl { float:left; }
+.fr { float:right; }
+.row { margin:15px; }
+.subHeadBox { margin-bottom:20px;padding:0 10px 10px 23px; }
+.subHead { float:left;font-size:small;font-weight:bold;margin-top:4px; }
+.helpBtn img { border:0;margin-left:5px; }
+.sec { margin-bottom:10px; }
+.secHead { background-repeat:no-repeat;background-position:0;height:63px;margin-left:20px; }
+.secHead h2 { color:#fff;font-size:medium;margin:0 0 0 20px;padding-top:7px; }
+.secHead div { background-repeat:no-repeat;background-position:top right;margin-left:55px;position:relative;top:14px;width:788px;height:33px; }
+.fldBox { background-color:#f9f9f9;border:solid 1px #ddd;margin:0 35px 15px 35px;padding:15px;display:block; }
+.fldBoxTags { background-color:#f9f9f9;border:solid 1px #ddd;display:block;margin-left:35px;margin-bottom:15px;padding:0 15px 15px;width:795px; }
+.tipsTable { margin-left:25px;margin-bottom:10px; }
+.tipsTable td { background-color:#f9f9f9;border:solid 1px #ddd; }
+.tips { min-height:250px;width:178px; }
+.tips h3 { font-size:small;background-color:#f0f0ee;border-bottom:1px solid #ddd;margin:0;padding:5px 10px 5px 10px; }
+.tips p { margin-left:10px;margin-right:10px; }
+.tips ul { margin-left:-15px;margin-right:5px; }
+.errorTtl { color:red;font-weight:bold; }
+.errorMsg,.error { color:red; }
+.errorList { color:red;font-weight:normal;list-style:none;margin-bottom:5px;padding:0; }
+.disabled { background-color:#ccc; }
+.disabledText { color:#aaa; }
+.feePromo { color:#009900;font-weight:bold; }
+#box { left:50%;margin-left:-450px;position:relative;width:900px; }
+#wrapper { border:solid 1px #ffb50c;border-top:1px solid #fff;border-bottom:1px solid #fff; }
+#lnkSaveForLaterImg { margin-left:20px; }
+#header { background:url(http://pics.ebaystatic.com/aw/pics/easylister/header_bg.gif) repeat-x bottom;background-color:#ffd739;border-color:#ffb50c;border-style:solid;border-width:1px 1px 0 1px;margin-top:10px;height:50px; }
+#headerTxt h1 { font-size:medium;font-weight:bold;margin-left:20px;margin-top:15px; }
+.errSum { border:solid 1px red;padding:10px;margin:10px 0 0 35px;width:768px; }
+.errSum div,.info div { margin-right:10px; }
+.warSum { border:solid 1px #ccc;padding:10px;margin:10px 0 0 35px;width:768px; }
+#footer { background:url(http://pics.ebaystatic.com/aw/pics/easylister/btm_bar.gif) #FFD112 repeat-x bottom; }
+#footerLt { background:url(http://pics.ebaystatic.com/aw/pics/easylister/btm_leftcnr.gif) no-repeat bottom left;border-bottom:1px solid white; }
+#footerRt { background:url(http://pics.ebaystatic.com/aw/pics/easylister/btm_rightcnr.gif) no-repeat bottom right; }
+#footerTxt { float:left;font-size:small;margin:8px 0 10px 10px; }
+#footerBtns { float:right;margin:10px 15px 10px 0; }
+#cusSupport { font-weight:bold;margin:10px 0 10px 0;text-align:center; }
+.btn_lnk { background:transparent;border:0;color:#1a4dc1;text-decoration:none; }
+.btn_lnkHover { background:transparent;border:0;cursor:hand;cursor:pointer;color:#1a4dc1;text-decoration:underline; }
+.btn_whiteLt { background:url(http://pics.ebaystatic.com/aw/pics/easylister/btn_whiteLt.gif) no-repeat top left;border:0;height:24px;font-family:arial; }
+.btn_whiteRt { background:url(http://pics.ebaystatic.com/aw/pics/easylister/btn_whiteRt.gif) no-repeat top right;display:inline-block;height:24px;padding-right:3px; }
+.btn_checkLt { background:url(http://pics.ebaystatic.com/aw/pics/easylister/btn_checkLt.gif) no-repeat top left;border:0;height:22px;padding-left:18px;margin-right:4px; }
+.btn_arrowLt { background:url(http://pics.ebaystatic.com/aw/pics/easylister/btn_arrowLt.gif) no-repeat top left;border:0;height:22px;padding-left:22px;margin-right:4px; }
+.btn_grayRt { background:url(http://pics.ebaystatic.com/aw/pics/easylister/btn_grayRt.gif) no-repeat top right;height:22px;padding-top:4px;padding-bottom:4px; }
+.readOnlyVal { font-weight:bold; }
+.inpErr { color:#ff0000; }
+.msgPanel { background-color:#edf1f9; }
+.panel-n { position:relative;border:1px solid #739dcd;border-bottom:0; }
+.panel-n .panel-e { position:relative;top:-1px;right:-1px;background:url(http://pics.ebaystatic.com/aw/pics/easylister/imgTopLeftBlue_6x6.gif) no-repeat top right; }
+.panel-n .panel-w { position:relative;left:-2px;height:6px;font-size:0;background:url(http://pics.ebaystatic.com/aw/pics/easylister/imgTopRightBlue_6x6.gif) no-repeat top left; }
+.panel-s { position:relative;border:1px solid #739dcd;border-top:0; }
+.panel-s .panel-e { position:relative;bottom:-1px;right:-1px;background:url(http://pics.ebaystatic.com/aw/pics/easylister/imgBottomRightBlue_6x6.gif) no-repeat bottom right; }
+.panel-s .panel-w { position:relative;left:-2px;height:6px;font-size:0;background:url(http://pics.ebaystatic.com/aw/pics/easylister/imgBottomLeftBlue_6x6.gif) no-repeat bottom left; }
+.panel-head { border-style:solid;border-color:#739dcd;border-width:0 1px 0 1px;padding:0 10px 0 10px; }
+.g-hdn { display:block;left:-9999px;position:absolute; }
+.footerBG { background:#d4e4f4 url(http://q.ebaystatic.com/aw/pics/buy/trust/imgEbpNeuFooter.gif) no-repeat bottom right;clear:right;color:#d4e4f4;font-family:Verdana;font-size:10px;padding:0;width:400px; }
+.coreFooterLinks .gh-hdn { font-size:0;height:0;margin-top:10px;overflow:hidden;visibility:hidden;width:0; }
+
+/* b=17270647 */
